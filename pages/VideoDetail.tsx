@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { droobiVideos, currentUser } from '../data/mockData';
-import { ChevronLeftIcon, ChatAltIcon, PlusIcon } from '../components/Icons';
+import { ChevronLeftIcon, ChatAltIcon, PlusIcon, ShareIcon, CheckIcon } from '../components/Icons';
 import Comment from '../components/Comment';
 import PlaylistModal from '../components/PlaylistModal';
 import VideoPlayer from '../components/VideoPlayer';
@@ -21,12 +22,22 @@ const VideoDetail: React.FC<VideoDetailProps> = ({ onWatch, playlists, onToggleI
     const [comments, setComments] = useState<CommentType[]>(video?.comments || []);
     const [newCommentText, setNewCommentText] = useState('');
     const [isPlaylistModalOpen, setIsPlaylistModalOpen] = useState(false);
+    const [isCopied, setIsCopied] = useState(false);
 
     useEffect(() => {
         if (video) {
             onWatch(video.id);
         }
     }, [videoId, onWatch, video]);
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2500);
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    };
 
     const handlePostComment = (e: React.FormEvent) => {
         e.preventDefault();
@@ -90,6 +101,22 @@ const VideoDetail: React.FC<VideoDetailProps> = ({ onWatch, playlists, onToggleI
                     >
                         <PlusIcon className="h-5 w-5 mr-2" />
                         Add to Playlist
+                    </button>
+                    <button 
+                        onClick={handleShare}
+                        className="inline-flex items-center px-4 py-2 bg-slate-700/50 text-slate-200 font-semibold rounded-lg shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 transition"
+                    >
+                        {isCopied ? (
+                            <>
+                                <CheckIcon className="h-5 w-5 mr-2 text-green-400" />
+                                Copied!
+                            </>
+                        ) : (
+                            <>
+                                <ShareIcon className="h-5 w-5 mr-2" />
+                                Share
+                            </>
+                        )}
                     </button>
                 </div>
             </div>

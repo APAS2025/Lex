@@ -5,6 +5,7 @@ import TermDetail from './pages/TermDetail';
 import Header from './components/Header';
 import VendorMicrosite from './pages/VendorMicrosite';
 import DroobiTVHome from './pages/DroobiTVHome';
+import DroobiTVSessions from './pages/DroobiTVSessions';
 import VideoDetail from './pages/VideoDetail';
 import { initialWatchHistory, initialPlaylists } from './data/mockData';
 import type { Playlist } from './types';
@@ -53,6 +54,7 @@ function App() {
             <Route path="/term/:id" element={<TermDetail />} />
             <Route path="/vendor/:vendorId" element={<VendorMicrosite />} />
             <Route path="/droobi-tv" element={<DroobiTVHome watchHistoryIds={watchHistory} playlists={playlists} />} />
+            <Route path="/droobi-tv/sessions" element={<DroobiTVSessions />} />
             <Route path="/video/:videoId" element={
               <VideoDetail 
                 onWatch={handleAddToHistory}

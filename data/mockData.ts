@@ -1,4 +1,31 @@
-import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist } from '../types';
+import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession } from '../types';
+
+const sampleDocs: DocumentationItem[] = [
+      { 
+        id: 'd001', 
+        title: 'AT-Filter-5000 Cut Sheet', 
+        type: 'Cut Sheet', 
+        category: 'Filtration',
+        downloads: 1247,
+        updatedAt: 'Updated 1 week ago',
+        tags: ['Municipal', 'Industrial'],
+        annualSavings: 50000,
+        previewImageUrl: 'https://picsum.photos/seed/doc-preview-1/800/600',
+        documentUrl: '#',
+      },
+      { 
+        id: 'd002', 
+        title: 'System Integration Specification', 
+        type: 'Specification', 
+        category: 'System Design',
+        downloads: 892,
+        updatedAt: 'Updated 2 weeks ago',
+        tags: ['API', 'SCADA'],
+        annualSavings: 0,
+        previewImageUrl: 'https://picsum.photos/seed/doc-preview-2/800/600',
+        documentUrl: '#',
+      },
+];
 
 export const vendors: Vendor[] = [
   {
@@ -10,11 +37,68 @@ export const vendors: Vendor[] = [
     phone: '1-800-555-AQUA',
     website: 'https://www.aquatech.com',
     isClaimed: true,
+    contacts: [
+      { id: 'c001', name: 'Dr. Eleanor Vance', title: 'Chief Technology Officer', email: 'e.vance@aquatech.com', avatarUrl: 'https://picsum.photos/seed/eleanor/100/100' },
+      { id: 'c002', name: 'Benjamin Carter', title: 'Head of Sales, North America', email: 'b.carter@aquatech.com', avatarUrl: 'https://picsum.photos/seed/benjamin/100/100' },
+      { id: 'c003', name: 'Olivia Chen', title: 'Municipal Solutions Lead', email: 'o.chen@aquatech.com', avatarUrl: 'https://picsum.photos/seed/olivia/100/100' },
+    ],
     documentation: [
-      { id: 'd001', title: 'AT-Filter-5000 Cut Sheet', type: 'Cut Sheet', url: '#' },
-      { id: 'd002', title: 'System Integration Specification', type: 'Specification', url: '#' },
-      { id: 'd003', title: 'Municipal Plant Drawing', type: 'Drawing', url: '#' },
-      { id: 'd004', title: '2024 Product Catalog', type: 'Collateral', url: '#' },
+       { 
+        id: 'd001-featured', 
+        title: 'Wastewater Treatment Plant Technical Specification', 
+        type: 'Specification', 
+        isFeatured: true,
+        category: 'Treatment Technology',
+        downloads: 538,
+        updatedAt: 'Updated 1 day ago',
+        tags: ['Wastewater', 'Compliance', 'Engineering'],
+        annualSavings: 220000,
+        previewImageUrl: 'https://i.imgur.com/u15B2n3.png',
+        documentUrl: '#',
+        complianceStatus: 'EPA Compliant',
+        roi: 247,
+        performanceMetrics: [
+          { name: 'Flow Rate Efficiency', value: 85 },
+          { name: 'Treatment Efficiency', value: 92 },
+          { name: 'Compliance Score', value: 96 },
+        ]
+      },
+       { 
+        id: 'd002-popular', 
+        title: 'Bioretention System Design Guide', 
+        type: 'Guide', 
+        category: 'Stormwater Management',
+        downloads: 1247,
+        updatedAt: 'Updated 3 days ago',
+        tags: ['EPA NPDES', 'FDEP Stormwater'],
+        annualSavings: 150000,
+        previewImageUrl: 'https://picsum.photos/seed/doc-pop-1/800/600',
+        documentUrl: '#',
+      },
+      { 
+        id: 'd003-popular', 
+        title: 'SCADA Implementation Checklist', 
+        type: 'Checklist', 
+        category: 'Control Systems',
+        downloads: 892,
+        updatedAt: 'Updated 1 week ago',
+        tags: ['AWWA J100', 'NIST Security'],
+        annualSavings: 320000,
+        previewImageUrl: 'https://picsum.photos/seed/doc-pop-2/800/600',
+        documentUrl: '#',
+      },
+      { 
+        id: 'd004-popular', 
+        title: 'MBR Technology Comparison', 
+        type: 'Comparison', 
+        category: 'Treatment Technology',
+        downloads: 2156,
+        updatedAt: 'Updated 2 days ago',
+        tags: ['NSF 350', 'EPA Standards'],
+        annualSavings: 280000,
+        previewImageUrl: 'https://picsum.photos/seed/doc-pop-3/800/600',
+        documentUrl: '#',
+      },
     ],
     articles: [
       { id: 'a001', title: 'The Future of Urban Water Filtration', description: 'Exploring next-gen technologies that are reshaping how cities manage their water resources.', imageUrl: 'https://picsum.photos/seed/article1/400/200', url: '#' },
@@ -54,11 +138,12 @@ export const vendors: Vendor[] = [
     phone: '1-877-555-PURE',
     website: 'https://www.purecycle.net',
     isClaimed: true,
-     documentation: [
-      { id: 'd007', title: 'MBR-100 Operations Manual', type: 'Collateral', url: '#' },
-      { id: 'd008', title: 'Sludge-to-Energy Process Drawing', type: 'Drawing', url: '#' },
-      { id: 'd009', title: 'Effluent Quality Specs', type: 'Specification', url: '#' },
+    contacts: [
+      { id: 'c004', name: 'Marcus Thorne', title: 'Director of R&D', email: 'm.thorne@purecycle.net', avatarUrl: 'https://picsum.photos/seed/marcus/100/100' },
+      { id: 'c005', name: 'Sophia Rodriguez', title: 'Lead Process Engineer', email: 's.rodriguez@purecycle.net', avatarUrl: 'https://picsum.photos/seed/sophia/100/100' },
+      { id: 'c006', name: 'David Lee', title: 'Client Relations Manager', email: 'd.lee@purecycle.net', avatarUrl: 'https://picsum.photos/seed/david/100/100' },
     ],
+    documentation: sampleDocs,
     articles: [
       { id: 'a007', title: 'The Circular Economy in Wastewater', description: 'How resource recovery is changing the paradigm of wastewater treatment.', imageUrl: 'https://picsum.photos/seed/article7/400/200', url: '#' },
       { id: 'a008', title: 'Nutrient Harvesting: A New Revenue Stream', description: 'Turning phosphorus and nitrogen from waste into valuable fertilizer products.', imageUrl: 'https://picsum.photos/seed/article8/400/200', url: '#' },
@@ -96,10 +181,12 @@ export const vendors: Vendor[] = [
     phone: '1-855-555-DATA',
     website: 'https://www.datacurrent.ai',
     isClaimed: true,
-    documentation: [
-      { id: 'd013', title: 'CurrentOS Platform API Docs', type: 'Specification', url: '#' },
-      { id: 'd014', title: 'SCADA Integration Whitepaper', type: 'Collateral', url: '#' },
+    contacts: [
+      { id: 'c007', name: 'Isabelle Moreau', title: 'VP of Product (Digital Twin)', email: 'i.moreau@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/isabelle/100/100' },
+      { id: 'c008', name: 'Leo Gallagher', title: 'Senior Data Scientist', email: 'l.gallagher@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/leo/100/100' },
+      { id: 'c009', name: 'Jasmine Patel', title: 'Smart Utility Consultant', email: 'j.patel@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/jasmine/100/100' },
     ],
+    documentation: sampleDocs,
     articles: [
       { id: 'a012', title: 'The Rise of the Digital Twin in Water', description: 'How virtual models of physical systems are revolutionizing utility planning and operations.', imageUrl: 'https://picsum.photos/seed/article12/400/200', url: '#' },
       { id: 'a013', title: 'AI-Powered Predictive Maintenance for Pumps', description: 'Case study on reducing downtime and operational costs through machine learning.', imageUrl: 'https://picsum.photos/seed/article13/400/200', url: '#' },
@@ -518,7 +605,7 @@ export const initialTerms: LexiconTerm[] = [
     term: 'Disinfection Byproducts (DBPs)',
     category: 'Water Quality',
     plainLanguageDefinition: 'Chemical compounds that form when a disinfectant, like chlorine, reacts with natural organic matter in the water. Some DBPs are regulated in drinking water because they may pose health risks.',
-    technicalDefinition: 'A class of chemical compounds formed during water disinfection when a disinfectant (e.g., chlorine, ozone, chloramine) reacts with naturally occurring organic and inorganic matter in the source water. Major classes include trihalomethanes (THMs) and haloacetic acids (HAAs).',
+    technicalDefinition: 'A class of chemical compounds formed during water disinfection when a disinfectant (e.g., chlorine, ozone, chloramine) reacts with a naturally occurring organic and inorganic matter in the source water. Major classes include trihalomethanes (THMs) and haloacetic acids (HAAs).',
     regulatoryReferences: ['EPA Stage 1 and Stage 2 Disinfectants and Disinfection Byproducts Rules'],
     designAndOMNotes: 'Control strategies include removing precursor material before disinfection, optimizing disinfectant dose, or switching to an alternative disinfectant like chloramines or UV.',
     risksAndFailureModes: ['Exceeding regulatory limits (Maximum Contaminant Levels).', 'Changes in source water quality leading to DBP spikes.', 'Unintended consequences of changing treatment processes.'],
@@ -879,5 +966,86 @@ export const initialPlaylists: Playlist[] = [
     id: 'pl002',
     name: 'Tech Deep Dives',
     videoIds: ['dv006', 'dv010', 'dv013']
+  }
+];
+
+export const droobiSessions: Session[] = [
+  {
+    id: 's001',
+    title: 'SCADA Cybersecurity Best Practices',
+    speaker: {
+      name: 'Mark Rodriguez',
+      affiliation: 'CyberWater Solutions',
+      avatarInitials: 'MR'
+    },
+    dateTime: new Date().toISOString(), // This will make it live for demo
+    durationMinutes: 60,
+    registeredAttendees: 456,
+    attendees: 456, // Live attendees
+    description: 'Essential security protocols for protecting water infrastructure control systems.',
+    category: 'Cybersecurity',
+    tags: ['SCADA', 'Security', 'Best Practices'],
+    isLive: true,
+    isPremium: true,
+    joinUrl: '#'
+  },
+  {
+    id: 's002',
+    title: 'Advanced MBR Technologies for Municipal Applications',
+    speaker: {
+      name: 'Dr. Sarah Chen',
+      affiliation: 'Water Tech Institute',
+      avatarInitials: 'SC'
+    },
+    dateTime: '2024-12-15T19:00:00Z', // UTC for 2:00 PM EST
+    durationMinutes: 90,
+    registeredAttendees: 234,
+    description: 'Deep dive into membrane bioreactor optimization for large-scale municipal facilities.',
+    category: 'Treatment Technology',
+    tags: ['MBR', 'Municipal', 'Optimization'],
+    isLive: false,
+    isPremium: false,
+    joinUrl: '#'
+  },
+  {
+    id: 's003',
+    title: 'Green Infrastructure ROI Analysis',
+    speaker: {
+      name: 'Lisa Park',
+      affiliation: 'EcoFlow Engineering',
+      avatarInitials: 'LP'
+    },
+    dateTime: '2024-12-20T20:00:00Z', // UTC for 3:00 PM EST
+    durationMinutes: 75,
+    registeredAttendees: 189,
+    description: 'Calculate and maximize return on investment for bioretention and LID systems.',
+    category: 'Green Infrastructure',
+    tags: ['ROI', 'Green Infrastructure', 'Economics'],
+    isLive: false,
+    isPremium: false,
+    joinUrl: '#'
+  }
+];
+
+export const onDemandSessions: OnDemandSession[] = [
+  {
+    id: 'od001',
+    title: 'AI in Water Management: Current Applications',
+    author: 'by Dr. James Liu',
+    views: 2847,
+    rating: 4.8,
+    durationMinutes: 85,
+    watchUrl: '#',
+    downloadUrl: '#'
+  },
+  {
+    id: 'od002',
+    title: 'Regulatory Updates: EPA 2024 Standards',
+    author: 'by Maria Santos',
+    views: 1923,
+    rating: 4.9,
+    durationMinutes: 60,
+    watchUrl: '#',
+    downloadUrl: '#'
   }
 ];

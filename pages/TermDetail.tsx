@@ -19,7 +19,9 @@ import {
     MailIcon,
     ClipboardListIcon,
     WifiIcon,
-    PhoneIcon
+    PhoneIcon,
+    ShareIcon,
+    CheckIcon
 } from '../components/Icons';
 
 const InfoCard: React.FC<{title: string; icon: React.ReactNode; children: React.ReactNode}> = ({ title, icon, children }) => (
@@ -101,6 +103,7 @@ const CollapsibleVendors: React.FC<{ vendors: Vendor[] }> = ({ vendors }) => {
 
 const TermDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [isCopied, setIsCopied] = useState(false);
 
   const term: LexiconTerm | undefined = useMemo(() => initialTerms.find((t) => t.id === id), [id]);
 
@@ -116,6 +119,15 @@ const TermDetail: React.FC = () => {
         .slice(0, 3); // Limit to 3 related terms
     }, [term]);
 
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2500);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+  };
+
   if (!term) {
     return (
       <div className="text-center">
@@ -126,6 +138,14 @@ const TermDetail: React.FC = () => {
       </div>
     );
   }
+
+  const ActionCard = ({ children, href, onClick, isButton = false }: { children: React.ReactNode; href?: string; onClick?: () => void; isButton?: boolean }) => {
+    const commonClasses = "group flex flex-col items-center justify-center text-center p-4 bg-slate-800/50 rounded-xl ring-1 ring-white/10 hover:ring-blue-500 hover:bg-slate-800 transition-all duration-200 h-full";
+    if (isButton) {
+        return <button onClick={onClick} className={commonClasses}>{children}</button>;
+    }
+    return <a href={href} target="_blank" rel="noopener noreferrer" className={commonClasses}>{children}</a>;
+  };
 
   return (
     <div className="container mx-auto">
@@ -144,25 +164,40 @@ const TermDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* Action Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-center">
-          {term.demoVideoUrl && (
-              <a href={term.demoVideoUrl} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-xl ring-1 ring-white/10 hover:ring-blue-500 hover:bg-slate-800 transition-all duration-200">
-                  <PlayIcon className="h-8 w-8 text-green-400" />
-                  <span className="mt-2 font-semibold text-slate-200">Watch Demo</span>
-              </a>
-          )}
-          {term.handbookUrl && (
-              <a href={term.handbookUrl} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-xl ring-1 ring-white/10 hover:ring-blue-500 hover:bg-slate-800 transition-all duration-200">
-                  <DocumentDownloadIcon className="h-8 w-8 text-sky-400" />
-                  <span className="mt-2 font-semibold text-slate-200">Download Handbook</span>
-              </a>
-          )}
-          <div className="flex flex-col items-center justify-center p-4 bg-slate-800/50 rounded-xl ring-1 ring-white/10">
-              <DocumentTextIcon className="h-8 w-8 text-purple-400" />
-              <span className="mt-2 font-semibold text-slate-200">{term.caseStudiesCount} Case Studies</span>
-          </div>
-      </div>
+      {/* Resources Section */}
+      <section className="mb-8">
+        <h2 className="text-2xl font-bold text-slate-200 mb-4">Resources</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {term.demoVideoUrl && (
+                <ActionCard href={term.demoVideoUrl}>
+                    <PlayIcon className="h-8 w-8 text-green-400 mb-2" />
+                    <h3 className="font-semibold text-slate-200">Watch Demo</h3>
+                    <p className="text-sm text-slate-400">See it in action.</p>
+                </ActionCard>
+            )}
+            {term.handbookUrl && (
+                <ActionCard href={term.handbookUrl}>
+                    <DocumentDownloadIcon className="h-8 w-8 text-sky-400 mb-2" />
+                    <h3 className="font-semibold text-slate-200">Download Handbook</h3>
+                    <p className="text-sm text-slate-400">Get the technical guide.</p>
+                </ActionCard>
+            )}
+             <ActionCard>
+                <DocumentTextIcon className="h-8 w-8 text-purple-400 mb-2" />
+                <h3 className="font-semibold text-slate-200">{term.caseStudiesCount} Case Studies</h3>
+                <p className="text-sm text-slate-400">Real-world applications.</p>
+            </ActionCard>
+            <ActionCard onClick={handleShare} isButton>
+                 {isCopied ? (
+                    <CheckIcon className="h-8 w-8 text-green-400 mb-2"/>
+                ) : (
+                    <ShareIcon className="h-8 w-8 text-teal-400 mb-2" />
+                )}
+                <h3 className="font-semibold text-slate-200">{isCopied ? 'Copied!' : 'Share Term'}</h3>
+                <p className="text-sm text-slate-400">{isCopied ? 'Link is on your clipboard' : 'Share with colleagues'}</p>
+            </ActionCard>
+        </div>
+      </section>
       
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <div className="lg:col-span-3 space-y-8">

@@ -158,4 +158,84 @@ const DroobiTVHome: React.FC<DroobiTVHomeProps> = ({ watchHistoryIds, playlists 
                     />
                     <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-slate-400 pointer-events-none" />
                     {searchQuery && (
-                        <button type="button" onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2 text
+                        <button type="button" onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors">
+                            <XIcon className="h-6 w-6" />
+                        </button>
+                    )}
+                </form>
+            </section>
+
+            {/* Render search results OR the curated home page */}
+            {hasSearched ? (
+                <section>
+                    <h2 className="text-3xl font-bold text-slate-100 mb-6">
+                        {isSearching ? 'Searching...' : `Results for "${searchQuery}"`}
+                    </h2>
+                    {isSearching && <Loader text="Analyzing your query..." />}
+                    {searchError && <div className="p-4 bg-red-900/50 text-red-300 rounded-lg">{searchError}</div>}
+                    {!isSearching && !searchError && (
+                        <>
+                            {searchResults.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                    {searchResults.map(video => (
+                                        <VideoCard key={video.id} video={video} isGrid />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-12 bg-slate-800/50 rounded-xl">
+                                    <h3 className="text-2xl font-bold text-slate-200">No results found</h3>
+                                    <p className="text-slate-400 mt-2">Try a different search query.</p>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </section>
+            ) : (
+                <>
+                    {/* AI News */}
+                    <VideoCategoryRow
+                        category="AI-Generated News"
+                        videos={newsVideos}
+                        icon={<NewspaperIcon className="h-6 w-6 mr-3 text-cyan-400" />}
+                    />
+
+                    {/* Partner Videos */}
+                     <VideoCategoryRow
+                        category="From Our Partners"
+                        videos={partnerVideos}
+                        icon={<StarIcon className="h-6 w-6 mr-3 text-yellow-400" />}
+                    />
+                
+                    {/* AI Recommendations */}
+                    {isLoadingAI && <Loader text="Curating your recommendations..." />}
+                    {aiError && <div className="mb-12 p-4 bg-red-900/50 text-red-300 rounded-lg">{aiError}</div>}
+                    {aiRecommendations && aiRecommendedVideos.length > 0 && (
+                        <VideoCategoryRow 
+                            category={aiRecommendations.title} 
+                            videos={aiRecommendedVideos}
+                            icon={<SparklesIcon className="h-6 w-6 mr-3 text-purple-400" />}
+                        />
+                    )}
+                    
+                    {/* Watch History */}
+                    <VideoCategoryRow 
+                        category="Continue Watching" 
+                        videos={watchHistoryVideos}
+                        icon={<ClockIcon className="h-6 w-6 mr-3 text-blue-400" />}
+                    />
+
+                    {/* Other Categories */}
+                    {regularVideoCategories.map(category => (
+                        <VideoCategoryRow
+                            key={category}
+                            category={category}
+                            videos={droobiVideos.filter(v => v.category === category && !v.source)}
+                        />
+                    ))}
+                </>
+            )}
+        </div>
+    );
+};
+
+export default DroobiTVHome;
