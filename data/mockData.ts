@@ -1,4 +1,4 @@
-import type { LexiconTerm, Vendor } from '../types';
+import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist } from '../types';
 
 export const vendors: Vendor[] = [
   {
@@ -6,6 +6,10 @@ export const vendors: Vendor[] = [
     name: 'AquaTech Solutions',
     logoUrl: 'https://picsum.photos/seed/aquatech/200/200',
     description: 'Pioneering advanced water filtration and management systems for municipal and industrial use. Our solutions are designed for reliability, efficiency, and sustainability.',
+    email: 'contact@aquatech.com',
+    phone: '1-800-555-AQUA',
+    website: 'https://www.aquatech.com',
+    isClaimed: true,
     documentation: [
       { id: 'd001', title: 'AT-Filter-5000 Cut Sheet', type: 'Cut Sheet', url: '#' },
       { id: 'd002', title: 'System Integration Specification', type: 'Specification', url: '#' },
@@ -32,30 +36,24 @@ export const vendors: Vendor[] = [
     name: 'InfraFlow Dynamics',
     logoUrl: 'https://picsum.photos/seed/infraflow/200/200',
     description: 'Specializes in smart sensor networks and predictive analytics for water distribution networks. We turn data into actionable insights.',
-    documentation: [
-      { id: 'd005', title: 'FlowMaster Sensor Spec Sheet', type: 'Specification', url: '#' },
-      { id: 'd006', title: 'Network Topology Guide', type: 'Collateral', url: '#' },
-    ],
-    articles: [
-      { id: 'a004', title: 'Predictive Analytics for Leak Detection', description: 'How our algorithms are finding leaks before they become catastrophic failures.', imageUrl: 'https://picsum.photos/seed/article4/400/200', url: '#' },
-      { id: 'a005', title: 'Building a Resilient Smart Water Grid', description: 'Key considerations for utilities looking to upgrade their infrastructure.', imageUrl: 'https://picsum.photos/seed/article5/400/200', url: '#' },
-      { id: 'a006', title: 'The Role of Digital Twins in Water', description: 'Simulating your network to optimize performance and plan for the future.', imageUrl: 'https://picsum.photos/seed/article6/400/200', url: '#' },
-    ],
-    videos: [
-      { id: 'vid004', title: 'InfraFlow Platform Demo', thumbnailUrl: 'https://picsum.photos/seed/video4/400/225', videoUrl: '#' },
-      { id: 'vid005', title: 'The Power of Real-Time Data', thumbnailUrl: 'https://picsum.photos/seed/video5/400/225', videoUrl: '#' },
-      { id: 'vid006', title: 'Customer Success Story: Mesa County', thumbnailUrl: 'https://picsum.photos/seed/video6/400/225', videoUrl: '#' },
-    ],
-     webinars: [
-      { id: 'web003', title: 'Past: Cybersecurity for Water Utilities', description: 'Protecting your critical infrastructure from emerging digital threats.', dateTime: '2024-07-01T14:00:00Z', url: '#', isLive: false },
-      { id: 'web004', title: 'Past: Intro to Predictive Maintenance', description: 'Learn how to leverage data to fix problems before they happen, saving time and money.', dateTime: '2024-05-20T14:00:00Z', url: '#', isLive: false },
-    ],
+    email: '',
+    phone: '',
+    website: 'https://www.infraflow.io',
+    isClaimed: false,
+    documentation: [],
+    articles: [],
+    videos: [],
+    webinars: [],
   },
   {
     id: 'v003',
     name: 'PureCycle Innovations',
     logoUrl: 'https://picsum.photos/seed/purecycle/200/200',
     description: 'Leading the way in wastewater treatment and resource recovery technologies. We create value from waste.',
+    email: 'solutions@purecycle.net',
+    phone: '1-877-555-PURE',
+    website: 'https://www.purecycle.net',
+    isClaimed: true,
      documentation: [
       { id: 'd007', title: 'MBR-100 Operations Manual', type: 'Collateral', url: '#' },
       { id: 'd008', title: 'Sludge-to-Energy Process Drawing', type: 'Drawing', url: '#' },
@@ -80,28 +78,24 @@ export const vendors: Vendor[] = [
     name: 'StormGuard Solutions',
     logoUrl: 'https://picsum.photos/seed/stormguard/200/200',
     description: 'Engineers of nature-based and structural solutions for modern stormwater management and flood resilience.',
-    documentation: [
-      { id: 'd010', title: 'Permeable Paver Spec Sheet', type: 'Specification', url: '#' },
-      { id: 'd011', title: 'Green Roof Installation Guide', type: 'Collateral', url: '#' },
-      { id: 'd012', title: 'Hydrodynamic Separator Drawing', type: 'Drawing', url: '#' },
-    ],
-    articles: [
-      { id: 'a010', title: 'Low Impact Development: A Primer', description: 'Understanding the core principles of LID and its benefits for urban environments.', imageUrl: 'https://picsum.photos/seed/article10/400/200', url: '#' },
-      { id: 'a011', title: 'Tackling Urban Flooding with Green Infrastructure', description: 'How cities are using our solutions to build resilience against extreme weather.', imageUrl: 'https://picsum.photos/seed/article11/400/200', url: '#' },
-    ],
-    videos: [
-      { id: 'vid010', title: 'Rain Garden Installation Timelapse', thumbnailUrl: 'https://picsum.photos/seed/video10/400/225', videoUrl: '#' },
-      { id: 'vid011', title: 'How a Hydrodynamic Separator Works', thumbnailUrl: 'https://picsum.photos/seed/video11/400/225', videoUrl: '#' },
-    ],
-    webinars: [
-      { id: 'web006', title: 'Past: The ROI of Green Infrastructure', description: 'A cost-benefit analysis of implementing sustainable stormwater solutions.', dateTime: '2024-06-25T14:00:00Z', url: '#', isLive: false },
-    ],
+    email: '',
+    phone: '',
+    website: 'https://www.stormguard.com',
+    isClaimed: false,
+    documentation: [],
+    articles: [],
+    videos: [],
+    webinars: [],
   },
   {
     id: 'v005',
     name: 'DataCurrent Analytics',
     logoUrl: 'https://picsum.photos/seed/datacurrent/200/200',
     description: 'A leading provider of SCADA, GIS, and predictive analytics platforms for the modern water utility. We transform data into operational intelligence.',
+    email: 'sales@datacurrent.ai',
+    phone: '1-855-555-DATA',
+    website: 'https://www.datacurrent.ai',
+    isClaimed: true,
     documentation: [
       { id: 'd013', title: 'CurrentOS Platform API Docs', type: 'Specification', url: '#' },
       { id: 'd014', title: 'SCADA Integration Whitepaper', type: 'Collateral', url: '#' },
@@ -587,5 +581,303 @@ export const initialTerms: LexiconTerm[] = [
     },
     isPremium: true,
     caseStudiesCount: 14,
+  }
+];
+
+export const videoCategories = [
+  'News',
+  'Infrastructure',
+  'Data',
+  'Resiliency',
+  'Asset Management',
+  'Climate Impact',
+  'Water',
+  'Wastewater',
+  'Stormwater',
+  'Emerging Contaminants',
+  'Blockchain'
+];
+
+export const currentUser: User = {
+    id: 'user-current',
+    name: 'You',
+    avatarUrl: 'https://picsum.photos/seed/you/100/100'
+};
+
+const users: User[] = [
+    { id: 'user-1', name: 'Alex Johnson', avatarUrl: 'https://picsum.photos/seed/alex/100/100' },
+    { id: 'user-2', name: 'Brenda Smith', avatarUrl: 'https://picsum.photos/seed/brenda/100/100' },
+    { id: 'user-3', name: 'Carlos Gomez', avatarUrl: 'https://picsum.photos/seed/carlos/100/100' },
+    currentUser
+];
+
+const comments: Comment[] = [
+    {
+        id: 'c-1',
+        user: users[0],
+        text: 'This was an excellent overview. The section on smart grids was particularly insightful. Has anyone implemented a similar system in a mid-sized city?',
+        timestamp: '2024-07-15T12:30:00Z',
+        likes: 15,
+        replies: [
+            {
+                id: 'c-2',
+                user: users[1],
+                text: 'We have! We saw a 15% reduction in line loss and much faster fault detection. The upfront cost was high, but the ROI is looking promising after just two years.',
+                timestamp: '2024-07-15T14:00:00Z',
+                likes: 8,
+                replies: []
+            },
+             {
+                id: 'c-3',
+                user: users[0],
+                text: 'That\'s great to hear, Brenda. What was the biggest challenge during implementation?',
+                timestamp: '2024-07-15T16:45:00Z',
+                likes: 4,
+                replies: []
+            }
+        ]
+    },
+    {
+        id: 'c-4',
+        user: users[2],
+        text: 'The discussion on autonomous transport seems a bit optimistic. The regulatory hurdles alone seem massive.',
+        timestamp: '2024-07-16T09:00:00Z',
+        likes: 3,
+        replies: []
+    }
+];
+
+const sampleHlsUrl = 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8';
+
+export const droobiVideos: DroobiVideo[] = [
+  {
+    id: 'dv001',
+    title: 'The Future of Urban Infrastructure',
+    description: 'A deep dive into the technologies and strategies shaping the cities of tomorrow, from smart grids to autonomous transport.',
+    thumbnailUrl: 'https://picsum.photos/seed/futureinfra/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Infrastructure',
+    durationMinutes: 45,
+    airDate: '2024-07-15T10:00:00Z',
+    series: { title: 'Megatrends', episode: 1 },
+    comments: comments,
+  },
+  {
+    id: 'dv002',
+    title: 'Harnessing Big Data for Water Utilities',
+    description: 'Learn how predictive analytics and real-time sensor data are revolutionizing water management and conservation efforts.',
+    thumbnailUrl: 'https://picsum.photos/seed/bigdatawater/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Data',
+    durationMinutes: 32,
+    airDate: '2024-07-12T14:30:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv003',
+    title: 'Building Coastal Resiliency',
+    description: 'Exploring nature-based solutions and hardened infrastructure designed to protect coastal communities from rising sea levels.',
+    thumbnailUrl: 'https://picsum.photos/seed/coastal/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Resiliency',
+    durationMinutes: 52,
+    airDate: '2024-07-10T09:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv004',
+    title: 'Proactive Asset Management',
+    description: 'A comprehensive guide to shifting from a reactive to a proactive maintenance strategy, extending asset life and reducing costs.',
+    thumbnailUrl: 'https://picsum.photos/seed/proactive/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Asset Management',
+    durationMinutes: 28,
+    airDate: '2024-07-09T11:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv005',
+    title: 'Climate Impact on Water Scarcity',
+    description: 'An investigation into how changing climate patterns are affecting global water resources and what can be done about it.',
+    thumbnailUrl: 'https://picsum.photos/seed/climatewater/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Climate Impact',
+    durationMinutes: 61,
+    airDate: '2024-07-08T13:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv006',
+    title: 'The Digital Twin Explained',
+    description: 'Unpacking the concept of the digital twin and its applications in optimizing complex infrastructure systems.',
+    thumbnailUrl: 'https://picsum.photos/seed/digitaltwin/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Data',
+    durationMinutes: 18,
+    airDate: '2024-07-05T15:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv007',
+    title: 'Innovations in Wastewater Treatment',
+    description: 'From resource recovery to energy neutrality, discover the cutting-edge technologies transforming wastewater plants.',
+    thumbnailUrl: 'https://picsum.photos/seed/wastewater/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Wastewater',
+    durationMinutes: 38,
+    airDate: '2024-07-03T10:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv008',
+    title: 'Tackling PFAS: The Forever Chemicals',
+    description: 'A look at the challenges and emerging solutions for detecting and treating PFAS in our water supply.',
+    thumbnailUrl: 'https://picsum.photos/seed/pfas/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Emerging Contaminants',
+    durationMinutes: 48,
+    airDate: '2024-07-01T14:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv009',
+    title: 'Smart Stormwater Management',
+    description: 'How green infrastructure and IoT sensors are creating smarter, more effective stormwater systems in our cities.',
+    thumbnailUrl: 'https://picsum.photos/seed/stormwater/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Stormwater',
+    durationMinutes: 25,
+    airDate: '2024-06-28T16:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv010',
+    title: 'Blockchain in Supply Chain',
+    description: 'Can blockchain technology bring transparency and security to the infrastructure supply chain? We investigate.',
+    thumbnailUrl: 'https://picsum.photos/seed/blockchain/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Blockchain',
+    durationMinutes: 35,
+    airDate: '2024-06-27T11:30:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv011',
+    title: 'The Great American Water System',
+    description: 'A historical look at the monumental engineering feats that brought water to American cities and the challenges they now face.',
+    thumbnailUrl: 'https://picsum.photos/seed/americanwater/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Water',
+    durationMinutes: 55,
+    airDate: '2024-06-26T09:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv012',
+    title: 'Grid Modernization',
+    description: 'The transition to a decentralized, resilient, and renewable energy grid is one of the greatest infrastructure challenges of our time.',
+    thumbnailUrl: 'https://picsum.photos/seed/grid/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Infrastructure',
+    durationMinutes: 42,
+    airDate: '2024-06-25T14:00:00Z',
+    series: { title: 'Megatrends', episode: 2 },
+    comments: [],
+  },
+    {
+    id: 'dv013',
+    title: 'Cybersecurity for Critical Infrastructure',
+    description: 'The digital transformation of infrastructure brings new threats. Experts discuss how to protect our most vital systems.',
+    thumbnailUrl: 'https://picsum.photos/seed/cyber/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Data',
+    durationMinutes: 48,
+    airDate: '2024-06-24T10:30:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv014',
+    title: 'Asset Management for Bridges',
+    description: 'A deep dive into inspection technologies and data analysis for maintaining the safety and longevity of our nation\'s bridges.',
+    thumbnailUrl: 'https://picsum.photos/seed/bridges/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Asset Management',
+    durationMinutes: 33,
+    airDate: '2024-06-21T13:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv015',
+    title: 'The Circular Economy: Water Reuse',
+    description: 'Exploring closed-loop systems where wastewater is treated to drinking water standards, creating a drought-proof water supply.',
+    thumbnailUrl: 'https://picsum.photos/seed/reuse/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Water',
+    durationMinutes: 29,
+    airDate: '2024-06-20T15:00:00Z',
+    comments: [],
+  },
+  {
+    id: 'dv016',
+    title: 'AI Discovers Hidden Aquifers',
+    description: 'A summary of new satellite data analysis, powered by AI, that has uncovered significant untapped groundwater resources in arid regions.',
+    thumbnailUrl: 'https://picsum.photos/seed/ainews1/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'News',
+    durationMinutes: 5,
+    airDate: '2024-07-18T09:00:00Z',
+    source: 'AI News',
+    comments: [],
+  },
+  {
+    id: 'dv017',
+    title: 'New Federal Funding for Lead Pipe Removal',
+    description: 'This week, the EPA announced a new $5 billion grant program to accelerate the replacement of lead service lines across the country.',
+    thumbnailUrl: 'https://picsum.photos/seed/ainews2/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'News',
+    durationMinutes: 4,
+    airDate: '2024-07-17T11:00:00Z',
+    source: 'AI News',
+    comments: [],
+  },
+  {
+    id: 'dv018',
+    title: 'The Future of Filtration by AquaTech',
+    description: 'Join AquaTech Solutions CTO, Dr. Eleanor Vance, as she unveils the groundbreaking AT-Filter-6000 series and its potential to revolutionize water treatment.',
+    thumbnailUrl: 'https://picsum.photos/seed/partner1/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Infrastructure',
+    durationMinutes: 15,
+    airDate: '2024-07-16T10:00:00Z',
+    source: 'Partner',
+    comments: [],
+  },
+  {
+    id: 'dv019',
+    title: 'DataCurrent: A Digital Twin Case Study',
+    description: 'See how DataCurrent Analytics helped the City of Aspenwood reduce energy costs by 20% using their real-time Digital Twin platform.',
+    thumbnailUrl: 'https://picsum.photos/seed/partner2/640/360',
+    videoUrl: sampleHlsUrl,
+    category: 'Data',
+    durationMinutes: 22,
+    airDate: '2024-07-15T14:00:00Z',
+    source: 'Partner',
+    comments: [],
+  },
+];
+
+export const initialWatchHistory: string[] = ['dv002', 'dv005', 'dv009'];
+
+export const initialPlaylists: Playlist[] = [
+  {
+    id: 'pl001',
+    name: 'My Favorites',
+    videoIds: ['dv001', 'dv012', 'dv005']
+  },
+  {
+    id: 'pl002',
+    name: 'Tech Deep Dives',
+    videoIds: ['dv006', 'dv010', 'dv013']
   }
 ];

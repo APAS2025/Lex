@@ -15,7 +15,11 @@ import {
     DocumentTextIcon,
     PlayIcon,
     DocumentDownloadIcon,
-    ChevronDownIcon
+    ChevronDownIcon,
+    MailIcon,
+    ClipboardListIcon,
+    WifiIcon,
+    PhoneIcon
 } from '../components/Icons';
 
 const InfoCard: React.FC<{title: string; icon: React.ReactNode; children: React.ReactNode}> = ({ title, icon, children }) => (
@@ -31,17 +35,34 @@ const InfoCard: React.FC<{title: string; icon: React.ReactNode; children: React.
 );
 
 const VendorCard: React.FC<{ vendor: Vendor }> = ({ vendor }) => (
-    <div className="flex items-center p-4 bg-slate-900/50 rounded-lg hover:bg-slate-700/50 transition-colors duration-200 ring-1 ring-slate-800">
-        <img src={vendor.logoUrl} alt={`${vendor.name} logo`} className="h-12 w-12 object-contain rounded-md bg-white p-1" />
-        <div className="ml-4">
-            <h4 className="font-bold text-slate-200">{vendor.name}</h4>
-            <p className="text-sm text-slate-400 line-clamp-2">{vendor.description}</p>
+    <div className="bg-slate-900/50 rounded-lg hover:bg-slate-700/50 transition-colors duration-200 ring-1 ring-slate-800 p-5 h-full flex flex-col">
+        <div className="flex items-center mb-3">
+            <img src={vendor.logoUrl} alt={`${vendor.name} logo`} className="h-12 w-12 object-contain rounded-md bg-white p-1 shrink-0" />
+            <h4 className="font-bold text-slate-200 ml-4 text-lg">{vendor.name}</h4>
         </div>
+        <p className="text-sm text-slate-400 line-clamp-3 mb-4 flex-grow">{vendor.description}</p>
+        
+        {vendor.isClaimed ? (
+            <div className="space-y-2 text-sm text-slate-400 border-t border-slate-700/50 pt-3">
+                <div className="flex items-center">
+                    <MailIcon className="h-4 w-4 mr-2 shrink-0 text-slate-500" />
+                    <a href={`mailto:${vendor.email}`} className="truncate hover:text-blue-400 transition-colors">{vendor.email}</a>
+                </div>
+                <div className="flex items-center">
+                    <PhoneIcon className="h-4 w-4 mr-2 shrink-0 text-slate-500" />
+                    <a href={`tel:${vendor.phone.replace(/-/g, '')}`} className="truncate hover:text-blue-400 transition-colors">{vendor.phone}</a>
+                </div>
+            </div>
+        ) : (
+             <div className="text-sm text-center border-t border-dashed border-slate-700/50 pt-3 mt-auto">
+                <span className="font-semibold text-blue-400">Claim this profile to connect</span>
+            </div>
+        )}
     </div>
 );
 
 const CollapsibleVendors: React.FC<{ vendors: Vendor[] }> = ({ vendors }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(true);
 
     if (vendors.length === 0) {
         return (
@@ -65,7 +86,7 @@ const CollapsibleVendors: React.FC<{ vendors: Vendor[] }> = ({ vendors }) => {
                 <ChevronDownIcon className={`h-6 w-6 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
             {isOpen && (
-                <div className="p-4 pt-0 space-y-4">
+                <div className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {vendors.map(vendor => (
                       <Link to={`/vendor/${vendor.id}`} key={vendor.id} className="block">
                         <VendorCard vendor={vendor} />
@@ -87,6 +108,13 @@ const TermDetail: React.FC = () => {
     if (!term) return [];
     return vendors.filter(vendor => term.linkedVendorIds.includes(vendor.id));
   }, [term]);
+  
+  const relatedTerms: LexiconTerm[] = useMemo(() => {
+    if (!term) return [];
+    return initialTerms
+        .filter(t => t.category === term.category && t.id !== term.id)
+        .slice(0, 3); // Limit to 3 related terms
+    }, [term]);
 
   if (!term) {
     return (
@@ -136,14 +164,18 @@ const TermDetail: React.FC = () => {
           </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+        <div className="lg:col-span-3 space-y-8">
             <InfoCard title="Plain Language Definition" icon={<BookOpenIcon className="h-7 w-7 text-sky-400" />}>
                 <p>{term.plainLanguageDefinition}</p>
             </InfoCard>
 
             <InfoCard title="Technical Definition" icon={<CodeIcon className="h-7 w-7 text-indigo-400" />}>
                 <p>{term.technicalDefinition}</p>
+            </InfoCard>
+
+            <InfoCard title="Design & O&M Notes" icon={<ClipboardListIcon className="h-7 w-7 text-cyan-400" />}>
+                <p>{term.designAndOMNotes}</p>
             </InfoCard>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -160,7 +192,7 @@ const TermDetail: React.FC = () => {
             </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="lg:col-span-2 space-y-8">
             <CollapsibleVendors vendors={linkedVendors} />
 
             <InfoCard title="Impact Metrics" icon={<ChartBarIcon className="h-7 w-7 text-amber-400" />}>
@@ -177,6 +209,19 @@ const TermDetail: React.FC = () => {
                     {term.regulatoryReferences.map((ref, i) => <li key={i}>{ref}</li>)}
                 </ul>
             </InfoCard>
+
+            {relatedTerms.length > 0 && (
+                <InfoCard title="Related Terms" icon={<WifiIcon className="h-7 w-7 text-teal-400" />}>
+                    <div className="space-y-4">
+                        {relatedTerms.map(related => (
+                            <Link key={related.id} to={`/term/${related.id}`} className="block not-prose group">
+                                <h4 className="font-bold text-slate-200 group-hover:text-blue-400 transition-colors">{related.term}</h4>
+                                <p className="text-sm text-slate-400 mt-1 line-clamp-2">{related.plainLanguageDefinition}</p>
+                            </Link>
+                        ))}
+                    </div>
+                </InfoCard>
+            )}
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 export interface DocumentationItem {
   id: string;
   title: string;
@@ -35,16 +34,20 @@ export interface Vendor {
   name: string;
   logoUrl: string;
   description: string;
+  email: string;
+  phone: string;
+  website?: string;
   documentation: DocumentationItem[];
   articles: Article[];
   videos: Video[];
   webinars: Webinar[];
+  isClaimed: boolean;
 }
 
 export interface ImpactMetric {
   name: string;
   value: string;
-  description: string;
+  description:string;
 }
 
 export interface ResilienceMapping {
@@ -70,4 +73,47 @@ export interface LexiconTerm {
   caseStudiesCount: number;
   demoVideoUrl?: string;
   handbookUrl?: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  avatarUrl: string;
+}
+
+export interface Comment {
+  id: string;
+  user: User;
+  text: string;
+  timestamp: string; // ISO string
+  replies: Comment[];
+  likes: number;
+}
+
+export interface DroobiVideo {
+  id: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  videoUrl: string;
+  category: string;
+  durationMinutes: number;
+  airDate: string; // ISO string
+  source?: 'AI News' | 'Partner';
+  series?: {
+    title: string;
+    episode: number;
+  };
+  comments: Comment[];
+}
+
+export interface Playlist {
+  id: string;
+  name: string;
+  videoIds: string[];
+}
+
+export interface AIRecommendation {
+  title: string;
+  recommendedVideoIds: string[];
 }

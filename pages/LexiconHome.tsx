@@ -69,12 +69,12 @@ const LexiconHome: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
          {/* Search Box */}
         <div className="bg-slate-800/50 p-6 rounded-xl ring-1 ring-white/10">
-          <label htmlFor="search" className="block text-lg font-bold text-slate-100">Search Lexicon</label>
-          <p className="text-sm text-slate-400 mb-3">Find terms, definitions, and more.</p>
+          <label htmlFor="search" className="block text-lg font-bold text-slate-100">Search Lexicon & Industry Partners</label>
+          <p className="text-sm text-slate-400 mb-3">Find terms, definitions, vendors, and more.</p>
           <input
             id="search"
             type="text"
-            placeholder="e.g., 'Non-Revenue Water'..."
+            placeholder="e.g., 'Non-Revenue Water' or 'AquaTech'..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"

@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type } from "@google/genai";
-import type { LexiconTerm } from '../types';
+import type { LexiconTerm, DroobiVideo, Playlist, AIRecommendation } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
@@ -109,5 +109,142 @@ export async function generateLexiconEntry(term: string): Promise<LexiconTerm> {
          throw new Error("API rate limit exceeded. Please try again later.");
     }
     throw new Error("Failed to generate lexicon entry from AI. Please check the term and try again.");
+  }
+}
+
+const aiRecommendationSchema = {
+  type: Type.OBJECT,
+  properties: {
+    title: { 
+      type: Type.STRING,
+      description: "A creative and engaging title for the recommendation list, such as 'For You', 'Picks for You', 'Because you like [Topic]', or 'Explore New Ideas'."
+    },
+    recommendedVideoIds: {
+      type: Type.ARRAY,
+      description: "An array of video IDs that the user would likely enjoy, based on their watch history. Should not include videos the user has already watched.",
+      items: { type: Type.STRING }
+    }
+  },
+  required: ['title', 'recommendedVideoIds']
+};
+
+
+export async function getAIRecommendations(
+  watchHistory: DroobiVideo[],
+  playlists: Playlist[],
+  allVideos: DroobiVideo[]
+): Promise<AIRecommendation> {
+  const watchedVideoIds = new Set(watchHistory.map(v => v.id));
+  playlists.forEach(p => p.videoIds.forEach(id => watchedVideoIds.add(id)));
+
+  const unwatchedVideos = allVideos
+    .filter(v => !watchedVideoIds.has(v.id))
+    .map(({ id, title, description, category }) => ({ id, title, description, category }));
+
+  const userHistorySummary = watchHistory.map(({ title, category }) => ({ title, category }));
+  const userPlaylistsSummary = playlists.map(p => ({
+    name: p.name,
+    videos: p.videoIds.map(id => allVideos.find(v => v.id === id)?.title).filter(Boolean)
+  }));
+
+  const prompt = `
+    You are a world-class recommendation engine for a video platform called Droobi TV, which focuses on public infrastructure, technology, and environmental topics. Your goal is to provide highly relevant video recommendations to users based on their viewing habits.
+
+    Here is a list of all available videos the user has NOT watched yet:
+    ${JSON.stringify(unwatchedVideos, null, 2)}
+
+    Here is a summary of the user's watch history:
+    ${JSON.stringify(userHistorySummary, null, 2)}
+
+    Here are the user's playlists, which also indicate strong interest:
+    ${JSON.stringify(userPlaylistsSummary, null, 2)}
+
+    Based on this user's activity, please analyze their interests and recommend up to 5 videos from the unwatched list that they would most likely enjoy.
+    Also, provide a creative and engaging title for this recommendation list.
+
+    Return your response as a single JSON object.
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: aiRecommendationSchema,
+      },
+    });
+
+    const jsonText = response.text.trim();
+    const result = JSON.parse(jsonText) as AIRecommendation;
+    
+    // Ensure the result is valid and contains an array
+    if (!result.recommendedVideoIds || !Array.isArray(result.recommendedVideoIds)) {
+      console.warn('AI recommendation did not return a valid video ID array.');
+      return { title: 'Recommended For You', recommendedVideoIds: [] };
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error generating AI recommendations:", error);
+    // Fallback to a generic recommendation
+    const fallbackIds = unwatchedVideos.slice(0, 5).map(v => v.id);
+    return { title: 'Discover Something New', recommendedVideoIds: fallbackIds };
+  }
+}
+
+const aiSearchResultSchema = {
+  type: Type.ARRAY,
+  items: { type: Type.STRING }
+};
+
+export async function performAISearch(
+  query: string,
+  allVideos: DroobiVideo[]
+): Promise<string[]> {
+  // We only need to send essential info to the AI to save tokens.
+  const searchableVideos = allVideos.map(({ id, title, description, category, series }) => ({
+    id,
+    title,
+    description,
+    category,
+    series: series?.title,
+  }));
+
+  const prompt = `
+    You are a powerful semantic search engine for a video platform called "Droobi TV", which focuses on public infrastructure, technology, and environmental topics. Your task is to find the most relevant videos based on the user's search query.
+
+    Analyze the user's query for its meaning and intent, not just keywords. Match it against the video titles, descriptions, categories, and series titles to find the best results.
+
+    User's Search Query: "${query}"
+
+    Here is the list of available videos:
+    ${JSON.stringify(searchableVideos, null, 2)}
+
+    Return a JSON array of the video IDs ('id' field) that are the most semantically relevant to the user's query. Order them from most to least relevant. Return up to 10 results. If no videos are relevant, return an empty array.
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: aiSearchResultSchema,
+      },
+    });
+
+    const jsonText = response.text.trim();
+    const result = JSON.parse(jsonText) as string[];
+
+    if (!Array.isArray(result)) {
+      console.warn('AI search did not return a valid array of video IDs.');
+      return [];
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error performing AI search:", error);
+    throw new Error("Failed to perform AI search. Please try again.");
   }
 }
