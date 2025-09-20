@@ -5,6 +5,7 @@ import type { LexiconTerm } from '../types';
 import { ArrowRightIcon, CheckBadgeIcon, StarIcon } from './Icons';
 import PremiumBadge from './PremiumBadge';
 import { vendors } from '../data/mockData';
+import { getCategoryLabel } from '../utils/categoryUtils';
 
 interface TermCardProps {
   term: LexiconTerm;
@@ -29,7 +30,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, onRate }) => {
           <h3 className="text-xl font-bold text-slate-100 group-hover:text-blue-400 transition-colors duration-300">{term.term}</h3>
           {term.isPremium && <PremiumBadge />}
         </div>
-         <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-blue-400">{term.category}</p>
+         <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-blue-400">{getCategoryLabel(term.category)}</p>
         <p className="mt-2 text-slate-400 line-clamp-3">
           {term.plainLanguageDefinition}
         </p>

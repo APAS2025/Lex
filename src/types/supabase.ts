@@ -115,7 +115,7 @@ export interface Database {
         Row: {
           id: string
           term: string
-          category: string
+          category: "data" | "asset_mgmt" | "climate_impacts" | "resiliency" | "regulations" | "governance" | "modeling" | "operations" | "ai_blockchain"
           plainLanguageDefinition: string
           technicalDefinition: string
           regulatoryReferences: string[]

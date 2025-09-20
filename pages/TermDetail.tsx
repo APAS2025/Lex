@@ -27,6 +27,7 @@ import {
 } from '../components/Icons';
 import CommunityContributions from '../components/CommunityContributions';
 import FeedbackModal from '../components/FeedbackModal';
+import { getCategoryLabel } from '../utils/categoryUtils';
 
 const InfoCard: React.FC<{title: string; icon: React.ReactNode; children: React.ReactNode}> = ({ title, icon, children }) => (
     <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10 p-6">
@@ -180,7 +181,7 @@ const TermDetail: React.FC = () => {
         <div className="flex justify-between items-start">
             <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-slate-100">{term.term}</h1>
-                <p className="mt-2 text-lg font-semibold text-blue-400 bg-blue-500/10 rounded-full px-4 py-1 inline-block">{term.category}</p>
+                <p className="mt-2 text-lg font-semibold text-blue-400 bg-blue-500/10 rounded-full px-4 py-1 inline-block">{getCategoryLabel(term.category)}</p>
             </div>
             {term.isPremium && <PremiumBadge />}
         </div>

@@ -8,6 +8,7 @@ import {
     DocumentTextIcon,
     LightBulbIcon,
     TrophyIcon,
+    FireIcon,
 } from '../components/Icons';
 
 export const PROFESSIONAL_TIERS: ProfessionalTier[] = [
@@ -44,5 +45,11 @@ export const BADGES: Badge[] = [
         name: 'Community Pillar',
         description: 'Received 10 "Insightful" marks on your comments from the community.',
         icon: ShieldCheckIcon,
+    },
+    {
+        id: 'B05',
+        name: 'Water Warrior',
+        description: 'Maintained a 7-day learning streak.',
+        icon: FireIcon,
     }
 ];

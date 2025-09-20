@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { FlashcardDeck } from '../types';
 import { ClipboardListIcon } from './Icons';
 
-const DeckCard: React.FC<{ deck: FlashcardDeck }> = ({ deck }) => {
+const DeckCard: React.FC<{ deck: FlashcardDeck; cardCount: number; }> = ({ deck, cardCount }) => {
     return (
         <Link 
             to={`/academy/deck/${deck.id}`} 
@@ -11,7 +11,7 @@ const DeckCard: React.FC<{ deck: FlashcardDeck }> = ({ deck }) => {
         >
             <div className="aspect-video bg-slate-800">
                 <img 
-                    src={deck.coverImageUrl} 
+                    src={deck.thumbnail_url} 
                     alt={deck.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -21,7 +21,7 @@ const DeckCard: React.FC<{ deck: FlashcardDeck }> = ({ deck }) => {
                  <h3 className="text-white font-bold truncate leading-tight">{deck.title}</h3>
                  <div className="flex items-center text-xs text-slate-300 mt-1">
                     <ClipboardListIcon className="h-4 w-4 mr-1.5" />
-                    <span>{deck.cardIds.length} Cards</span>
+                    <span>{cardCount} Cards</span>
                  </div>
             </div>
         </Link>

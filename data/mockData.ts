@@ -1,4 +1,6 @@
-import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession, Manual, Flashcard, FlashcardDeck, EducationPathway } from '../types';
+import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession, Manual, Flashcard, FlashcardDeck, LearningPathway, OneWaterMinute } from '../types';
+// FIX: Import getCategoryLabel for use in flashcard deck generation.
+import { getCategoryLabel } from '../utils/categoryUtils';
 import { WaterDropIcon, LightningBoltIcon, ChartBarIcon, BeakerIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '../components/Icons';
 
 const sampleDocs: DocumentationItem[] = [
@@ -251,7 +253,7 @@ export const currentUser: User = {
     avatarUrl: 'https://picsum.photos/seed/you/100/100',
     xp: 6200,
     tierId: 'T4',
-    badges: ['B01', 'B02', 'B04'],
+    badges: ['B01', 'B02', 'B04', 'B05'],
     stats: {
         commentsPosted: 38,
         documentsUploaded: 4,
@@ -306,7 +308,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't001',
     term: 'Non-Revenue Water (NRW)',
-    category: 'Utility Management',
+    category: 'operations',
     plainLanguageDefinition: 'Water that is produced and treated but gets "lost" before it reaches the customer. This can happen through leaks, theft, or inaccurate meters. It\'s a major source of wasted resources and lost income for water utilities.',
     technicalDefinition: 'The difference between the volume of water put into a water distribution system and the volume that is billed to customers. NRW is typically categorized into three components: real losses (physical leakage), apparent losses (unauthorized consumption and metering inaccuracies), and unbilled authorized consumption.',
     regulatoryReferences: ['IWA Water Balance Standard', 'AWWA M36 Manual'],
@@ -375,7 +377,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't002',
     term: 'Advanced Metering Infrastructure (AMI)',
-    category: 'Water Distribution',
+    category: 'data',
     plainLanguageDefinition: 'A system of smart water meters, communication networks, and data management systems that allows for two-way communication between the utility and the meter. It enables real-time monitoring of water usage.',
     technicalDefinition: 'An integrated system of smart meters, communication networks, and data management systems that enables two-way communication between utilities and customers. The system provides granular, near real-time data on water consumption.',
     regulatoryReferences: ['NIST Framework for Smart Grid Interoperability', 'EPA WaterSense Program'],
@@ -400,7 +402,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't003',
     term: 'Membrane Bioreactor (MBR)',
-    category: 'Wastewater Treatment',
+    category: 'operations',
     plainLanguageDefinition: 'A modern wastewater treatment process that combines a biological treatment step with a membrane filtration step. It\'s like using a super-fine filter to clean wastewater, resulting in very high-quality treated water that can often be reused.',
     technicalDefinition: 'A wastewater treatment process combining a suspended growth biological reactor with a low-pressure membrane filtration system (e.g., microfiltration or ultrafiltration) for solids separation. It eliminates the need for a secondary clarifier.',
     regulatoryReferences: ['EPA Title 22 (California Water Recycling Criteria)', 'NSF/ANSI Standard 40, 245, 350'],
@@ -424,7 +426,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't004',
     term: 'Green Infrastructure',
-    category: 'Stormwater Management',
+    category: 'climate_impacts',
     plainLanguageDefinition: 'Using nature-based solutions like rain gardens, green roofs, and permeable pavements to manage stormwater runoff where it falls, rather than channeling it into pipes.',
     technicalDefinition: 'A network of decentralized stormwater management practices, such as vegetated rooftops, permeable pavements, and bioretention areas, that mimic natural hydrological processes to infiltrate, evapotranspire, or harvest stormwater.',
     regulatoryReferences: ['EPA Green Infrastructure Program', 'LEED v4.1 Rainwater Management Credit'],
@@ -448,7 +450,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't005',
     term: 'Hydraulic Modeling',
-    category: 'Water Distribution',
+    category: 'modeling',
     plainLanguageDefinition: 'Creating a computer simulation of a water pipe network to understand how water flows, predict pressure, and plan for future changes or emergencies.',
     technicalDefinition: 'The use of computational software to simulate the hydraulic behavior of a water distribution system, analyzing parameters like flow rates, pressure, head loss, and water age under various operational scenarios.',
     regulatoryReferences: ['AWWA Manual M32', 'NFPA 291 for fire flow testing'],
@@ -472,7 +474,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't006',
     term: 'SCADA',
-    category: 'Digital Water',
+    category: 'operations',
     plainLanguageDefinition: 'A system that allows utilities to monitor and control their equipment remotely. Think of it as the central nervous system for a water plant or distribution network, showing operators what\'s happening in real-time on a computer screen.',
     technicalDefinition: 'Supervisory Control and Data Acquisition. A system of software and hardware elements that allows industrial organizations to control industrial processes locally or at remote locations, monitor, gather, and process real-time data.',
     regulatoryReferences: ['AWWA G430 Security Practices', 'NIST Cybersecurity Framework'],
@@ -495,7 +497,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't007',
     term: 'Combined Sewer Overflow (CSO)',
-    category: 'Stormwater Management',
+    category: 'operations',
     plainLanguageDefinition: 'In older cities, wastewater from homes and stormwater from streets are collected in the same pipe. During heavy rain, the system can get overwhelmed and discharge a mix of untreated sewage and stormwater directly into local waterways.',
     technicalDefinition: 'A discharge from a combined sewer system, which is designed to collect rainwater runoff, domestic sewage, and industrial wastewater in the same pipe. CSOs occur during periods of heavy rainfall or snowmelt when the volume of wastewater exceeds the capacity of the sewer system or treatment plant.',
     regulatoryReferences: ['EPA National CSO Control Policy', 'Clean Water Act Section 402'],
@@ -518,7 +520,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't008',
     term: 'Asset Management',
-    category: 'Utility Management',
+    category: 'asset_mgmt',
     plainLanguageDefinition: 'The process of managing a utility\'s physical assets (like pipes, pumps, and plants) in the most cost-effective way. It involves knowing what you have, its condition, and when it needs to be repaired or replaced to provide reliable service.',
     technicalDefinition: 'A systematic process of deploying, operating, maintaining, upgrading, and disposing of assets cost-effectively. It balances cost, risk, and performance to achieve the organization\'s strategic objectives.',
     regulatoryReferences: ['ISO 55000 / 55001', 'EPA Asset Management for Water and Wastewater Utilities'],
@@ -542,7 +544,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't009',
     term: 'Digital Twin',
-    category: 'Digital Water',
+    category: 'modeling',
     plainLanguageDefinition: 'A virtual, real-time replica of a physical water system. It combines live data from sensors with hydraulic models to help utilities test "what-if" scenarios, train operators, and optimize performance without touching the real system.',
     technicalDefinition: 'A dynamic, virtual representation of a physical asset, process, or system. It is continuously updated with data from its physical counterpart and uses simulation, machine learning, and reasoning to help decision-making.',
     regulatoryReferences: ['(Emerging standards)', 'Digital Twin Consortium Frameworks'],
@@ -566,7 +568,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't010',
     term: 'Anaerobic Digestion',
-    category: 'Wastewater Treatment',
+    category: 'operations',
     plainLanguageDefinition: 'A process where bacteria break down organic waste (like sewage sludge) in an environment without oxygen. This process produces biogas (which can be used for energy) and reduces the amount of solids that need to be disposed of.',
     technicalDefinition: 'A sequence of biological processes in which microorganisms break down biodegradable material in the absence of oxygen. It is widely used for treating wastewater sludges and other organic wastes, producing biogas and a nutrient-rich digestate.',
     regulatoryReferences: ['EPA Title 40 CFR Part 503 (Biosolids Rule)', 'Renewable Fuel Standard (RFS) Program'],
@@ -589,7 +591,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't011',
     term: 'PFAS',
-    category: 'Water Quality',
+    category: 'regulations',
     plainLanguageDefinition: 'A group of man-made chemicals, often called "forever chemicals," that don\'t break down easily in the environment or the human body. They are found in many consumer products and are an emerging contaminant of concern in drinking water.',
     technicalDefinition: 'Per- and polyfluoroalkyl substances. A large, complex group of synthetic chemicals characterized by a chain of carbon atoms strongly bonded to fluorine atoms. Their resistance to heat, water, and oil makes them persistent in the environment.',
     regulatoryReferences: ['EPA Health Advisories for PFOA and PFOS', 'Unregulated Contaminant Monitoring Rule (UCMR)'],
@@ -612,7 +614,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't012',
     term: 'District Metered Area (DMA)',
-    category: 'Water Distribution',
+    category: 'operations',
     plainLanguageDefinition: 'A way of dividing a large water pipe network into smaller, manageable zones. By measuring the water flowing in and out of each zone, utilities can quickly find leaks and better manage pressure in that specific area.',
     technicalDefinition: 'A discrete area of a water distribution network, created by closing boundary valves, where the quantity of water entering and leaving is metered. It allows for the systematic calculation of water balances and the management of leakage and pressure.',
     regulatoryReferences: ['IWA Water Loss Task Force Best Practices', 'AWWA Manual M36'],
@@ -635,7 +637,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't013',
     term: 'Biosolids',
-    category: 'Wastewater Treatment',
+    category: 'operations',
     plainLanguageDefinition: 'The nutrient-rich organic material produced during wastewater treatment. After being treated to kill pathogens, it can be recycled and used as a fertilizer to improve soil quality.',
     technicalDefinition: 'Treated sewage sludge that meets U.S. EPA pollutant and pathogen requirements for land application. Treatment processes include digestion, dewatering, and thermal drying to produce a safe, beneficial product.',
     regulatoryReferences: ['EPA Title 40 CFR Part 503 (Biosolids Rule)'],
@@ -658,7 +660,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't014',
     term: 'Pipe Condition Assessment',
-    category: 'Water Distribution',
+    category: 'asset_mgmt',
     plainLanguageDefinition: 'The process of inspecting and testing pipes to determine their physical condition. This helps utilities understand which pipes are close to failing and need to be replaced first, saving money by preventing costly breaks.',
     technicalDefinition: 'The evaluation of the structural, material, and hydraulic state of pipelines. Technologies include visual inspection (CCTV), acoustic analysis, electromagnetic testing, and physical coupon analysis.',
     regulatoryReferences: ['AWWA Manual M28', 'ASTM F1216 (CIPP)'],
@@ -681,7 +683,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't015',
     term: 'Activated Sludge',
-    category: 'Wastewater Treatment',
+    category: 'operations',
     plainLanguageDefinition: 'The most common method for treating sewage. It uses a mixture of microorganisms (the "activated sludge") and oxygen to break down organic pollutants in the wastewater, cleaning it before it\'s discharged.',
     technicalDefinition: 'A biological wastewater treatment process that uses a flocculated mass of microorganisms (activated sludge) in an aerated tank to aerobically treat wastewater. It is followed by a secondary clarifier to separate the treated liquid from the sludge.',
     regulatoryReferences: ['EPA Secondary Treatment Regulation (40 CFR Part 133)'],
@@ -704,7 +706,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't016',
     term: 'Public-Private Partnership (P3)',
-    category: 'Infrastructure Finance',
+    category: 'governance',
     plainLanguageDefinition: 'A collaboration between a government agency and a private company to finance, build, and operate an infrastructure project, like a water treatment plant. It\'s a way to leverage private sector expertise and funding for public projects.',
     technicalDefinition: 'A long-term contractual agreement between a public agency and a private entity to deliver a public asset or service. P3 models vary widely, from Design-Build (DB) to Design-Build-Finance-Operate-Maintain (DBFOM).',
     regulatoryReferences: ['Varies by state and federal legislation authorizing P3s.'],
@@ -727,7 +729,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't017',
     term: 'Capital Improvement Plan (CIP)',
-    category: 'Utility Management',
+    category: 'asset_mgmt',
     plainLanguageDefinition: 'A utility\'s long-term roadmap for building, repairing, and upgrading its infrastructure. It\'s a prioritized list of projects with estimated costs and schedules, which helps in financial planning and setting future water rates.',
     technicalDefinition: 'A multi-year planning instrument used to identify and prioritize capital projects and associated funding strategies. The CIP links the utility\'s strategic plan, asset management plan, and financial plan.',
     regulatoryReferences: ['Governmental Accounting Standards Board (GASB) principles'],
@@ -749,7 +751,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't018',
     term: 'Disinfection Byproducts (DBPs)',
-    category: 'Water Quality',
+    category: 'regulations',
     plainLanguageDefinition: 'Chemical compounds that form when a disinfectant, like chlorine, reacts with a natural organic matter in the water. Some DBPs are regulated in drinking water because they may pose health risks.',
     technicalDefinition: 'A class of chemical compounds formed during water disinfection when a disinfectant (e.g., chlorine, ozone, chloramine) reacts with a naturally occurring organic and inorganic matter in the source water. Major classes include trihalomethanes (THMs) and haloacetic acids (HAAs).',
     regulatoryReferences: ['EPA Stage 1 and Stage 2 Disinfectants and Disinfection Byproducts Rules'],
@@ -772,7 +774,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't019',
     term: 'Water Hardness',
-    category: 'Water Quality',
+    category: 'operations',
     plainLanguageDefinition: 'The amount of dissolved minerals, specifically calcium and magnesium, in water. Hard water is not a health risk, but it can cause mineral buildup (scale) in pipes and on fixtures, and make it harder for soap to lather.',
     technicalDefinition: 'The concentration of multivalent cations in water. Total hardness is typically expressed as the sum of calcium and magnesium concentrations, converted to an equivalent of calcium carbonate (mg/L as CaCO3).',
     regulatoryReferences: ['Not regulated by EPA as a primary or secondary standard, but is a key aesthetic parameter.'],
@@ -795,7 +797,7 @@ export const initialTerms: LexiconTerm[] = [
   {
     id: 't020',
     term: 'Biological Nutrient Removal (BNR)',
-    category: 'Wastewater Treatment',
+    category: 'operations',
     plainLanguageDefinition: 'An advanced wastewater treatment process specifically designed to remove nitrogen and phosphorus. These nutrients can cause environmental problems like algae blooms in rivers and lakes.',
     technicalDefinition: 'A process used at wastewater treatment plants that utilizes microorganisms to remove nitrogen and phosphorus from wastewater. It involves creating specific aerobic, anoxic, and anaerobic conditions to encourage the growth of desired bacteria.',
     regulatoryReferences: ['EPA National Pollutant Discharge Elimination System (NPDES) permits with nutrient limits.'],
@@ -817,113 +819,294 @@ export const initialTerms: LexiconTerm[] = [
   }
 ];
 
-export const flashcards: Flashcard[] = initialTerms.map(term => ({
-    id: `fc-${term.id}`,
-    termId: term.id,
-    front: {
-        title: term.term,
-        context: term.category,
-    },
+// --- LEXICON ACADEMY DATA ---
+
+const now = Date.now();
+const oneDay = 24 * 60 * 60 * 1000;
+
+export const seededFlashcards: Flashcard[] = [
+  {
+    id: 'card_data_01',
+    deck_id: 'deck_data_foundations',
+    category_id: 'data',
+    front: { type: 'text', content: 'What is a data pipeline in a utility?' },
     back: {
-        definition: term.plainLanguageDefinition,
-        imageUrl: `https://picsum.photos/seed/${term.id}/600/400`,
-        // Add vendor and video links for specific cards
-        ...(term.id === 't001' && { vendorId: 'v001', videoUrl: sampleHlsUrl }), // NRW
-        ...(term.id === 't002' && { vendorId: 'v002' }), // AMI
-        ...(term.id === 't003' && { vendorId: 'v003', videoUrl: sampleHlsUrl }), // MBR
-        ...(term.id === 't005' && { vendorId: 'v005', videoUrl: sampleHlsUrl }), // Hydraulic Modeling
-        ...(term.id === 't009' && { vendorId: 'v005', videoUrl: sampleHlsUrl }), // Digital Twin
+      type: 'rich',
+      content: 'A governed flow moving raw data (SCADA, lab, GIS, billing) into validated, analytics-ready tables with lineage, QA/QC, and access controls.',
     },
-}));
+    difficulty: 2,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_asset_mgmt_01',
+    deck_id: 'deck_asset_mgmt_risk',
+    category_id: 'asset_mgmt',
+    front: { type: 'text', content: 'Define risk = ?' },
+    back: {
+      type: 'rich',
+      content: 'Risk = Likelihood of Failure × Consequence of Failure. Used to prioritize maintenance and capital projects.',
+    },
+    difficulty: 1,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_climate_01',
+    deck_id: 'deck_climate_basics',
+    category_id: 'climate_impacts',
+    front: { type: 'text', content: 'What is saltwater intrusion?' },
+    back: {
+      type: 'rich',
+      content: 'Seawater pushing into freshwater aquifers due to sea-level rise or over-pumping; threatens potable supplies.',
+    },
+    difficulty: 3,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_resiliency_01',
+    deck_id: 'deck_resiliency_planning',
+    category_id: 'resiliency',
+    front: { type: 'text', content: 'What is redundancy in resilience planning?' },
+    back: {
+      type: 'rich',
+      content: 'Duplicated critical capacity (pumps, power, comms) to maintain service during failures or shocks.',
+    },
+    difficulty: 2,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_regulations_01',
+    deck_id: 'deck_regulatory_foundations',
+    category_id: 'regulations',
+    front: { type: 'text', content: 'What is a Consent Decree?' },
+    back: {
+      type: 'rich',
+      content: 'A court-enforced agreement requiring corrective actions, reporting, and deadlines to resolve regulatory violations.',
+    },
+    difficulty: 4,
+    media: { image_url: 'https://picsum.photos/seed/consent_decree/600/400' },
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_governance_01',
+    deck_id: 'deck_governance_basics',
+    category_id: 'governance',
+    front: { type: 'text', content: 'What is a RACI?' },
+    back: {
+      type: 'rich',
+      content: 'Responsible–Accountable–Consulted–Informed matrix clarifying decision rights and execution ownership.',
+    },
+    difficulty: 2,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_modeling_01',
+    deck_id: 'deck_modeling_essentials',
+    category_id: 'modeling',
+    front: { type: 'text', content: 'Calibrating a hydraulic model means…' },
+    back: {
+      type: 'rich',
+      content: 'Adjusting model parameters (roughness, demand patterns, losses) so outputs match observed field data.',
+    },
+    difficulty: 3,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_operations_01',
+    deck_id: 'deck_operations_fundamentals',
+    category_id: 'operations',
+    front: { type: 'text', content: 'SOP vs. Work Instruction?' },
+    back: {
+      type: 'rich',
+      content: 'SOP = the “what/why/when/who” standard; Work Instruction = step-by-step “how” for consistent execution.',
+    },
+    difficulty: 2,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_ai_blockchain_01',
+    deck_id: 'deck_ai_concepts',
+    category_id: 'ai_blockchain',
+    front: { type: 'text', content: 'What is provenance in AI outputs?' },
+    back: {
+      type: 'rich',
+      content: 'Traceability of data sources, prompts, and model versions that produced an answer; enables trust and audit.',
+    },
+    difficulty: 3,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+    // Adding more cards for deck variety
+  {
+    id: 'card_regulations_02',
+    deck_id: 'deck_regulatory_foundations',
+    category_id: 'regulations',
+    front: { type: 'text', content: 'What is NPDES?' },
+    back: {
+      type: 'rich',
+      content: 'National Pollutant Discharge Elimination System. A permit program under the Clean Water Act that controls water pollution by regulating point sources that discharge pollutants into waters of the United States.',
+    },
+    difficulty: 3,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+  {
+    id: 'card_asset_mgmt_02',
+    deck_id: 'deck_asset_mgmt_risk',
+    category_id: 'asset_mgmt',
+    front: { type: 'text', content: 'What is a CMMS?' },
+    back: {
+      type: 'rich',
+      content: 'Computerized Maintenance Management System. Software that centralizes maintenance information and facilitates the processes of maintenance operations.',
+       bullets: ['Manages work orders', 'Tracks asset history', 'Schedules preventive maintenance'],
+    },
+    difficulty: 2,
+    media: {},
+    status: 'active',
+    created_at: now,
+  },
+];
+
+export const oneWaterMinute: OneWaterMinute = {
+    date_key: new Date().toISOString().split('T')[0],
+    card_id: 'card_climate_01',
+    headline: 'What is saltwater intrusion?',
+    rollup_deck_id: 'deck_climate_basics'
+};
+
+export const flashcards: Flashcard[] = [
+  ...seededFlashcards
+];
 
 export const flashcardDecks: FlashcardDeck[] = [
     {
-        id: 'deck001',
+        id: 'deck_one_water_minute',
         title: 'One Water Minute',
-        description: "A daily, snackable card to keep you sharp. Swipe through the last 7 days.",
-        category: 'By Category',
-        subcategory: 'Daily',
-        cardIds: flashcards.slice(0, 7).map(fc => fc.id),
-        coverImageUrl: 'https://picsum.photos/seed/dailydeck/600/400',
+        description: "A daily, snackable card to keep you sharp. Today's focus: Saltwater Intrusion.",
+        category_id: 'climate_impacts',
+        estimated_minutes: 1,
+        thumbnail_url: 'https://picsum.photos/seed/dailydeck/600/400',
+        vendor_ids: ['v001'],
+        status: 'published',
+        language: 'en',
+        created_at: now - oneDay,
+        updated_at: now,
     },
-    {
-        id: 'deck002',
-        title: 'Utility Management Fundamentals',
-        description: 'Master the core concepts of running a modern water utility, from assets to finance.',
-        category: 'By Category',
-        subcategory: 'Utility Management',
-        cardIds: flashcards.filter(fc => fc.front.context === 'Utility Management').map(fc => fc.id),
-        coverImageUrl: 'https://picsum.photos/seed/utilitydeck/600/400',
-    },
-    {
-        id: 'deck003',
-        title: 'Wastewater Treatment Essentials',
-        description: 'Explore the processes that turn wastewater into a valuable resource.',
-        category: 'By Category',
-        subcategory: 'Wastewater Treatment',
-        cardIds: flashcards.filter(fc => fc.front.context === 'Wastewater Treatment').map(fc => fc.id),
-        coverImageUrl: 'https://picsum.photos/seed/wwdeck/600/400',
-    },
-    {
-        id: 'deck004',
-        title: 'AquaTech Solutions Deck',
+    // Create decks for each of the 9 seeded flashcards, adding sponsorship to one.
+    ...seededFlashcards.map(card => {
+        const deck: FlashcardDeck = {
+            id: card.deck_id,
+            title: `${getCategoryLabel(card.category_id)} Foundations`,
+            description: `Core concepts for the ${getCategoryLabel(card.category_id)} category.`,
+            category_id: card.category_id,
+            estimated_minutes: 5,
+            thumbnail_url: `https://picsum.photos/seed/${card.deck_id}/600/400`,
+            status: 'published',
+            language: 'en',
+            created_at: now,
+            updated_at: now,
+        };
+
+        // Special handling for the deck used in "One Water Minute" to make it sponsored
+        if (card.deck_id === 'deck_climate_basics') {
+            deck.sponsorship = {
+                sponsor_id: 'v001', // AquaTech Solutions
+            };
+        }
+        
+        return deck;
+    }),
+     {
+        id: 'deck_vendor_aquatech',
+        title: 'AquaTech Solutions Deep Dive',
         description: 'Learn about the key terms and technologies related to AquaTech Solutions.',
-        category: 'Vendor Decks',
-        vendorId: 'v001',
-        cardIds: flashcards.filter(fc => initialTerms.find(t => t.id === fc.termId)?.linkedVendorIds.includes('v001')).map(fc => fc.id),
-        coverImageUrl: 'https://picsum.photos/seed/aquatechdeck/600/400',
+        category_id: 'operations',
+        vendor_ids: ['v001'],
+        estimated_minutes: 8,
+        thumbnail_url: 'https://picsum.photos/seed/aquatechdeck/600/400',
+        status: 'published',
+        language: 'en',
+        created_at: now,
+        updated_at: now,
     },
     {
-        id: 'deck005',
-        title: 'Stormwater & Green Infrastructure',
-        description: 'Understand modern approaches to managing stormwater and enhancing urban resilience.',
-        category: 'By Category',
-        subcategory: 'Stormwater Management',
-        cardIds: flashcards.filter(fc => fc.front.context === 'Stormwater Management').map(fc => fc.id),
-        coverImageUrl: 'https://picsum.photos/seed/stormdeck/600/400',
-    },
-    {
-        id: 'deck006',
-        title: 'EPA Compliance Essentials',
-        description: 'Key regulations and standards from the EPA that every water professional should know.',
-        category: 'Regulatory & Compliance',
-        cardIds: ['fc-t018', 'fc-t013', 'fc-t011', 'fc-t007'],
-        coverImageUrl: 'https://picsum.photos/seed/regdeck1/600/400',
-    },
-    {
-        id: 'deck007',
-        title: 'AWWA Standards Overview',
-        description: 'A primer on important American Water Works Association standards for system design and management.',
-        category: 'Regulatory & Compliance',
-        cardIds: ['fc-t001', 'fc-t012', 'fc-t005'],
-        coverImageUrl: 'https://picsum.photos/seed/regdeck2/600/400',
+        id: 'deck_vendor_purecycle',
+        title: 'PureCycle Innovations Overview',
+        description: 'Explore concepts in wastewater treatment and resource recovery from PureCycle.',
+        category_id: 'operations',
+        vendor_ids: ['v003'],
+        estimated_minutes: 10,
+        thumbnail_url: 'https://picsum.photos/seed/purecycledeck/600/400',
+        status: 'published',
+        language: 'en',
+        created_at: now,
+        updated_at: now,
     }
 ];
 
-export const educationPathways: EducationPathway[] = [
+export const learningPathways: LearningPathway[] = [
     {
-        id: 'path001',
+        id: 'pathway_data_to_decisions',
         title: 'From Data to Decisions',
-        description: 'Master the digital water journey, from SCADA and AMI data pipelines to governance and AI-driven insights for operational excellence.',
-        deckIds: ['deck002'], // Placeholder, should include decks on data pipelines, governance, etc.
-        coverImageUrl: 'https://picsum.photos/seed/pathway1/600/400',
-        credentialName: 'Digital Water Specialist Level 1',
+        description: 'Master the digital water journey, from SCADA and data pipelines to governance and AI-driven insights for operational excellence.',
+        thumbnail_url: 'https://picsum.photos/seed/pathway1/600/400',
+        steps: [
+            { deck_id: 'deck_data_foundations' },
+            { deck_id: 'deck_governance_basics' },
+            { deck_id: 'deck_operations_fundamentals' },
+            { deck_id: 'deck_ai_concepts' }
+        ],
+        estimated_minutes: 25,
+        category_mix: ['data', 'governance', 'operations', 'ai_blockchain'],
+        badge_id: 'Digital Water Specialist Level 1',
+        status: 'published',
     },
     {
-        id: 'path002',
+        id: 'pathway_asset_risk_to_plan',
         title: 'Asset Risk to Capital Plan',
         description: 'Learn to translate asset condition and risk into a defensible, data-driven capital improvement plan (CIP) and secure funding.',
-        deckIds: ['deck002'], // Placeholder, should include decks on condition assessment, risk, funding.
-        coverImageUrl: 'https://picsum.photos/seed/pathway2/600/400',
-        credentialName: 'Asset Management Strategist',
+        thumbnail_url: 'https://picsum.photos/seed/pathway2/600/400',
+        steps: [
+            { deck_id: 'deck_asset_mgmt_risk' },
+            { deck_id: 'deck_operations_fundamentals' },
+            { deck_id: 'deck_governance_basics' }
+        ],
+        estimated_minutes: 18,
+        category_mix: ['asset_mgmt', 'operations', 'governance'],
+        badge_id: 'Asset Management Strategist',
+        status: 'published',
     },
     {
-        id: 'path003',
+        id: 'pathway_flood_resilience',
         title: 'Flood & Water Quality Resilience',
         description: 'A comprehensive pathway covering stormwater management, hydraulic modeling, and the use of AI sensors to build resilient systems.',
-        deckIds: ['deck005'], // Placeholder
-        coverImageUrl: 'https://picsum.photos/seed/pathway3/600/400',
-        credentialName: 'Urban Resilience Professional',
+        thumbnail_url: 'https://picsum.photos/seed/pathway3/600/400',
+        steps: [
+            { deck_id: 'deck_climate_basics' },
+            { deck_id: 'deck_modeling_essentials' },
+            { deck_id: 'deck_regulatory_foundations' },
+            { deck_id: 'deck_ai_concepts' }
+        ],
+        estimated_minutes: 28,
+        category_mix: ['resiliency', 'modeling', 'regulations', 'ai_blockchain'],
+        badge_id: 'Urban Resilience Professional',
+        status: 'published',
     }
 ];
 

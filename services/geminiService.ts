@@ -15,7 +15,7 @@ const responseSchema = {
     term: { type: Type.STRING },
     category: { 
         type: Type.STRING,
-        description: "The specific infrastructure sector this term belongs to, e.g., 'Wastewater Treatment', 'Stormwater Management', 'Utility Management', 'Water Distribution'."
+        description: "The specific infrastructure sector this term belongs to. MUST be one of: 'data', 'asset_mgmt', 'climate_impacts', 'resiliency', 'regulations', 'governance', 'modeling', 'operations', 'ai_blockchain'."
     },
     plainLanguageDefinition: { type: Type.STRING },
     technicalDefinition: { type: Type.STRING },
@@ -68,7 +68,16 @@ export async function generateLexiconEntry(term: string): Promise<LexiconTerm> {
   const prompt = `
     You are an expert in water and public infrastructure. Your task is to create a detailed lexicon entry for the term: "${term}".
     Please provide the information in a structured JSON format. The entry should be comprehensive, accurate, and follow the persona of "The Language of Water": professional, direct, no fluff.
-    - 'category' should be a specific infrastructure sector like 'Wastewater Treatment', 'Stormwater Management', 'Utility Management', or 'Water Distribution'.
+    - 'category' MUST be one of the following specific IDs:
+      - 'data': Data architecture, pipelines, schemas, sensors, QA/QC
+      - 'asset_mgmt': CMMS/EAM, lifecycle, condition assessment, risk & criticality
+      - 'climate_impacts': SLR, drought, heat, extreme rain, algal blooms
+      - 'resiliency': Redundancy, recovery time, mitigation, community readiness
+      - 'regulations': Chapter 24, FBC, EPA/DEP rules, permitting, enforcement
+      - 'governance': Policies, roles, accountability, audits, public transparency
+      - 'modeling': Hydrologic/hydraulic, water quality, demand/forecast, twins
+      - 'operations': Plant ops, collections/distribution, SOPs, O&M, SCADA
+      - 'ai_blockchain': RAG/agents, model governance, provenance, ledgers, credits
     - Plain language definition should be easily understandable by the public.
     - Technical definition should be precise for industry professionals.
     - Risks should be practical and relevant.

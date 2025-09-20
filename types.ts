@@ -8,6 +8,7 @@ import type { Database } from './types/supabase';
 // that currently imports from this file. This is a clean way to adopt
 // the new generated types.
 
+export type LexiconCategory = Database['public']['Tables']['lexicon_terms']['Row']['category'];
 export type PerformanceMetric = Database['public']['Tables']['performance_metrics']['Row'];
 export type DocumentationItem = Database['public']['Tables']['documentation_items']['Row'];
 export type Article = Database['public']['Tables']['articles']['Row'];
@@ -139,35 +140,79 @@ export type OnDemandSession = Database['public']['Tables']['on_demand_sessions']
 // Lexicon Academy Types
 export type Flashcard = {
   id: string;
-  termId: string; // Link back to the full LexiconTerm
+  deck_id: string;
+  category_id: LexiconCategory;
   front: {
-    title: string;
-    context?: string; // e.g., category
+    type: 'text';
+    content: string;
   };
   back: {
-    definition: string;
-    imageUrl?: string;
-    vendorId?: string; // Link to a vendor for context
-    videoUrl?: string; // Link to a micro-video lesson
+    type: 'rich';
+    content: string;
+    bullets?: string[];
+    related_terms?: string[];
+    video_url?: string | null;
+    vendor_link?: string | null;
   };
+  difficulty: number;
+  media: {
+    image_url?: string | null;
+    audio_url?: string | null;
+  };
+  reg_refs?: string[];
+  source_doc_ids?: string[];
+  status: 'active' | 'draft';
+  created_at: number;
 };
 
 export type FlashcardDeck = {
   id: string;
   title: string;
+  category_id: LexiconCategory;
+  tags?: string[];
   description: string;
-  category: 'By Category' | 'Vendor Decks' | 'Regulatory & Compliance' | 'Deep Learning Pathways';
-  subcategory?: string; // e.g., 'Data', 'Asset Management' for 'By Category'
-  cardIds: string[];
-  coverImageUrl: string;
-  vendorId?: string;
+  estimated_minutes: number;
+  vendor_ids?: string[];
+  reg_refs?: string[];
+  thumbnail_url: string;
+  is_featured?: boolean;
+  language: 'en';
+  status: 'published' | 'draft';
+  created_at: number;
+  updated_at: number;
+  sponsorship?: {
+    sponsor_id: string;
+    tagline?: string;
+  };
 };
 
-export type EducationPathway = {
+export type LearningPathway = {
   id: string;
   title: string;
   description: string;
-  deckIds: string[];
-  coverImageUrl: string;
-  credentialName: string; // e.g., "Flood Resilience Level 1"
+  thumbnail_url: string;
+  steps: { deck_id: string }[];
+  estimated_minutes: number;
+  category_mix: LexiconCategory[];
+  badge_id: string;
+  status: 'published' | 'draft';
+};
+
+export type OneWaterMinute = {
+  date_key: string;
+  card_id: string;
+  headline: string;
+  rollup_deck_id: string;
+};
+
+export type UserProgress = {
+  user_id: string;
+  deck_id: string;
+  card_id: string;
+  last_seen: number;
+  ease_factor: number;
+  interval_days: number;
+  repetitions: number;
+  streak_days: number;
+  mastery_percent: number;
 };

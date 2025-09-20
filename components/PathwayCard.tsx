@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import type { EducationPathway } from '../types';
+import type { LearningPathway } from '../types';
 import { TrophyIcon, ClipboardListIcon } from './Icons';
 
-const PathwayCard: React.FC<{ pathway: EducationPathway }> = ({ pathway }) => {
+const PathwayCard: React.FC<{ pathway: LearningPathway }> = ({ pathway }) => {
     return (
         <Link 
             to={`/academy/pathway/${pathway.id}`} 
@@ -11,7 +11,7 @@ const PathwayCard: React.FC<{ pathway: EducationPathway }> = ({ pathway }) => {
         >
             <div className="aspect-[4/3] bg-slate-800">
                 <img 
-                    src={pathway.coverImageUrl} 
+                    src={pathway.thumbnail_url} 
                     alt={pathway.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
@@ -22,11 +22,11 @@ const PathwayCard: React.FC<{ pathway: EducationPathway }> = ({ pathway }) => {
                  <div className="flex items-center justify-between text-xs text-slate-200 mt-3 pt-2 border-t border-white/20">
                     <div className="flex items-center">
                         <ClipboardListIcon className="h-4 w-4 mr-1.5" />
-                        <span>{pathway.deckIds.length} Decks</span>
+                        <span>{pathway.steps.length} Decks</span>
                     </div>
                     <div className="flex items-center font-semibold text-yellow-300">
                         <TrophyIcon className="h-4 w-4 mr-1.5" />
-                        <span>{pathway.credentialName}</span>
+                        <span>{pathway.badge_id}</span>
                     </div>
                  </div>
             </div>

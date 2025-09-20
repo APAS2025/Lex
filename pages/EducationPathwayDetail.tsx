@@ -1,11 +1,11 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronLeftIcon, TrophyIcon } from '../components/Icons';
-import { educationPathways } from '../data/mockData';
+import { learningPathways } from '../data/mockData';
 
 const EducationPathwayDetail: React.FC = () => {
     const { pathwayId } = useParams<{ pathwayId: string }>();
-    const pathway = educationPathways.find(p => p.id === pathwayId);
+    const pathway = learningPathways.find(p => p.id === pathwayId);
 
     if (!pathway) {
         return (
@@ -32,7 +32,7 @@ const EducationPathwayDetail: React.FC = () => {
                 <p className="mt-4 text-xl text-slate-300 max-w-2xl mx-auto">{pathway.description}</p>
                  <div className="mt-6 inline-flex items-center space-x-2 bg-yellow-600/20 text-yellow-300 text-sm font-semibold px-4 py-2 rounded-full ring-1 ring-inset ring-yellow-500/50">
                     <TrophyIcon className="h-4 w-4" />
-                    <span>Unlocks: {pathway.credentialName}</span>
+                    <span>Unlocks: {pathway.badge_id}</span>
                 </div>
             </div>
 
