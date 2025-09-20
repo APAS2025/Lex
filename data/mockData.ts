@@ -1,5 +1,4 @@
 import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession, Manual, Flashcard, FlashcardDeck, EducationPathway } from '../types';
-import { getTierForXp } from '../utils/gamification';
 import { WaterDropIcon, LightningBoltIcon, ChartBarIcon, BeakerIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '../components/Icons';
 
 const sampleDocs: DocumentationItem[] = [
@@ -751,7 +750,7 @@ export const initialTerms: LexiconTerm[] = [
     id: 't018',
     term: 'Disinfection Byproducts (DBPs)',
     category: 'Water Quality',
-    plainLanguageDefinition: 'Chemical compounds that form when a disinfectant, like chlorine, reacts with natural organic matter in the water. Some DBPs are regulated in drinking water because they may pose health risks.',
+    plainLanguageDefinition: 'Chemical compounds that form when a disinfectant, like chlorine, reacts with a natural organic matter in the water. Some DBPs are regulated in drinking water because they may pose health risks.',
     technicalDefinition: 'A class of chemical compounds formed during water disinfection when a disinfectant (e.g., chlorine, ozone, chloramine) reacts with a naturally occurring organic and inorganic matter in the source water. Major classes include trihalomethanes (THMs) and haloacetic acids (HAAs).',
     regulatoryReferences: ['EPA Stage 1 and Stage 2 Disinfectants and Disinfection Byproducts Rules'],
     designAndOMNotes: 'Control strategies include removing precursor material before disinfection, optimizing disinfectant dose, or switching to an alternative disinfectant like chloramines or UV.',

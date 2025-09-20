@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-// Fix: Import PROFESSIONAL_TIERS from its source in gamificationData.ts instead of through utils.
 import { getUserById, getTierById, getBadgeById } from '../utils/gamification';
 import { PROFESSIONAL_TIERS } from '../data/gamificationData';
 import type { User, ProfessionalTier, Badge } from '../types';
