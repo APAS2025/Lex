@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { flashcardDecks, flashcards, learningPathways, vendors, oneWaterMinute } from '../data/mockData';
+import { getFlashcardDecks, flashcards, learningPathways, vendors, oneWaterMinute } from '../data/mockData';
 import type { FlashcardDeck, LearningPathway, LexiconCategory } from '../types';
 import DeckCard from '../components/DeckCard';
 import PathwayCard from '../components/PathwayCard';
 import GamificationDashboard from '../components/GamificationDashboard';
-// FIX: Import DocumentTextIcon to resolve usage error.
 import { BrainCircuitIcon, ChevronRightIcon, SparklesIcon, StarIcon, DocumentTextIcon } from '../components/Icons';
 import { LEXICON_CATEGORY_DETAILS } from '../utils/categoryUtils';
 
@@ -50,8 +49,9 @@ const PathwayCategoryRow: React.FC<{ title: string; pathways: LearningPathway[] 
 };
 
 const OneWaterMinuteHero: React.FC = () => {
+    const flashcardDecks = useMemo(() => getFlashcardDecks(), []);
     const dailyCard = useMemo(() => flashcards.find(c => c.id === oneWaterMinute.card_id), []);
-    const dailyDeck = useMemo(() => flashcardDecks.find(d => d.id === oneWaterMinute.rollup_deck_id), []);
+    const dailyDeck = useMemo(() => flashcardDecks.find(d => d.id === oneWaterMinute.rollup_deck_id), [flashcardDecks]);
 
     const sponsor = useMemo(() => {
         if (!dailyDeck?.sponsorship) return null;
@@ -96,20 +96,21 @@ const OneWaterMinuteHero: React.FC = () => {
 };
 
 const AcademyHome: React.FC = () => {
+    const flashcardDecks = useMemo(() => getFlashcardDecks(), []);
     const vendorDecks = useMemo(() => 
         flashcardDecks.filter(d => d.vendor_ids && d.vendor_ids.length > 0), 
-    []);
+    [flashcardDecks]);
     
     const regulatoryDecks = useMemo(() => 
         flashcardDecks.filter(d => d.category_id === 'regulations'), 
-    []);
+    [flashcardDecks]);
 
     const categoryOrder = Object.keys(LEXICON_CATEGORY_DETAILS) as LexiconCategory[];
     const [activeCategory, setActiveCategory] = useState<LexiconCategory>(categoryOrder[0]);
 
     const decksForActiveCategory = useMemo(() => 
         flashcardDecks.filter(d => d.category_id === activeCategory),
-        [activeCategory]
+        [activeCategory, flashcardDecks]
     );
 
 

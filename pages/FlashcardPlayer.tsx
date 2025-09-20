@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { flashcardDecks, flashcards, vendors } from '../data/mockData';
+import { getFlashcardDecks, flashcards, vendors } from '../data/mockData';
 import { ChevronLeftIcon, ChevronRightIcon, ArrowUturnUpIcon, XIcon, PlayIcon, FireIcon, BookmarkSlashIcon, SpeakerWaveIcon, SpeakerXMarkIcon, SparklesIcon } from '../components/Icons';
 import type { Vendor, LexiconCategory } from '../types';
 import VideoPlayer from '../components/VideoPlayer';
@@ -48,7 +48,8 @@ const FlashcardPlayer: React.FC = () => {
     const [touchStartX, setTouchStartX] = useState<number | null>(null);
     const [touchStartY, setTouchStartY] = useState<number | null>(null);
     
-    const deck = useMemo(() => flashcardDecks.find(d => d.id === deckId), [deckId]);
+    const flashcardDecks = useMemo(() => getFlashcardDecks(), []);
+    const deck = useMemo(() => flashcardDecks.find(d => d.id === deckId), [deckId, flashcardDecks]);
     const cardsInDeck = useMemo(() => {
         if (!deck) return [];
         return flashcards.filter(c => c.deck_id === deckId);

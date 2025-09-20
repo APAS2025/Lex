@@ -999,7 +999,7 @@ export const flashcards: Flashcard[] = [
 ];
 
 // Create a unique set of decks from the flashcards
-const decksFromFlashcards = Array.from(
+const createDecksFromFlashcards = (): FlashcardDeck[] => Array.from(
   new Map(
     seededFlashcards.map(card => {
       const deck: FlashcardDeck = {
@@ -1027,7 +1027,7 @@ const decksFromFlashcards = Array.from(
   ).values()
 );
 
-export const flashcardDecks: FlashcardDeck[] = [
+export const getFlashcardDecks = (): FlashcardDeck[] => ([
     {
         id: 'deck_one_water_minute',
         title: 'One Water Minute',
@@ -1041,7 +1041,7 @@ export const flashcardDecks: FlashcardDeck[] = [
         created_at: now - oneDay,
         updated_at: now,
     },
-    ...decksFromFlashcards,
+    ...createDecksFromFlashcards(),
     {
         id: 'deck_vendor_aquatech',
         title: 'AquaTech Solutions Deep Dive',
@@ -1068,7 +1068,7 @@ export const flashcardDecks: FlashcardDeck[] = [
         created_at: now,
         updated_at: now,
     }
-];
+]);
 
 export const learningPathways: LearningPathway[] = [
     {

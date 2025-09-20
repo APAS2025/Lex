@@ -14,7 +14,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.9.1",
     "hls.js": "1.5.8",
-    "@headlessui/react": "^1.7.20"
+    "@headlessui/react": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
