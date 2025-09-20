@@ -7,8 +7,14 @@ import VendorMicrosite from './pages/VendorMicrosite';
 import DroobiTVHome from './pages/DroobiTVHome';
 import DroobiTVSessions from './pages/DroobiTVSessions';
 import VideoDetail from './pages/VideoDetail';
+import UserProfile from './pages/UserProfile';
+import ManualsLibrary from './pages/ManualsLibrary';
+import ManualDetail from './pages/ManualDetail';
 import { initialWatchHistory, initialPlaylists } from './data/mockData';
 import type { Playlist } from './types';
+import AcademyHome from './pages/AcademyHome';
+import FlashcardPlayer from './pages/FlashcardPlayer';
+import EducationPathwayDetail from './pages/EducationPathwayDetail';
 
 function App() {
   const [watchHistory, setWatchHistory] = useState<string[]>(initialWatchHistory);
@@ -55,6 +61,11 @@ function App() {
             <Route path="/vendor/:vendorId" element={<VendorMicrosite />} />
             <Route path="/droobi-tv" element={<DroobiTVHome watchHistoryIds={watchHistory} playlists={playlists} />} />
             <Route path="/droobi-tv/sessions" element={<DroobiTVSessions />} />
+            <Route path="/manuals" element={<ManualsLibrary />} />
+            <Route path="/manual/:manualId" element={<ManualDetail />} />
+            <Route path="/academy" element={<AcademyHome />} />
+            <Route path="/academy/deck/:deckId" element={<FlashcardPlayer />} />
+            <Route path="/academy/pathway/:pathwayId" element={<EducationPathwayDetail />} />
             <Route path="/video/:videoId" element={
               <VideoDetail 
                 onWatch={handleAddToHistory}
@@ -63,6 +74,7 @@ function App() {
                 onCreatePlaylist={handleCreatePlaylist}
               />} 
             />
+            <Route path="/profile/:userId" element={<UserProfile />} />
           </Routes>
         </main>
       </div>

@@ -1,4 +1,6 @@
-import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession } from '../types';
+import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession, Manual, Flashcard, FlashcardDeck, EducationPathway } from '../types';
+import { getTierForXp } from '../utils/gamification';
+import { WaterDropIcon, LightningBoltIcon, ChartBarIcon, BeakerIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '../components/Icons';
 
 const sampleDocs: DocumentationItem[] = [
       { 
@@ -27,6 +29,8 @@ const sampleDocs: DocumentationItem[] = [
       },
 ];
 
+const sampleHlsUrl = 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8';
+
 export const vendors: Vendor[] = [
   {
     id: 'v001',
@@ -37,10 +41,29 @@ export const vendors: Vendor[] = [
     phone: '1-800-555-AQUA',
     website: 'https://www.aquatech.com',
     isClaimed: true,
+    isVerified: true,
     contacts: [
       { id: 'c001', name: 'Dr. Eleanor Vance', title: 'Chief Technology Officer', email: 'e.vance@aquatech.com', avatarUrl: 'https://picsum.photos/seed/eleanor/100/100' },
       { id: 'c002', name: 'Benjamin Carter', title: 'Head of Sales, North America', email: 'b.carter@aquatech.com', avatarUrl: 'https://picsum.photos/seed/benjamin/100/100' },
       { id: 'c003', name: 'Olivia Chen', title: 'Municipal Solutions Lead', email: 'o.chen@aquatech.com', avatarUrl: 'https://picsum.photos/seed/olivia/100/100' },
+    ],
+    kpis: [
+      {
+        id: 'kpi001',
+        objective: 'Reduce Non-Revenue Water (NRW)',
+        measurableOutcome: 'Achieve a 15% reduction in real water losses across two district metered areas within 24 months.',
+        financialReturn: '~$250,000 / year in recovered water and reduced pumping costs.',
+        investment: '~$400,000 for sensor deployment and analytics platform subscription.',
+        icon: WaterDropIcon,
+      },
+      {
+        id: 'kpi002',
+        objective: 'Improve Filtration Uptime',
+        measurableOutcome: 'Increase mean time between failures (MTBF) for primary filtration units by 30% over 12 months.',
+        financialReturn: '~$120,000 / year in reduced emergency maintenance and labor.',
+        investment: '~$150,000 for predictive maintenance hardware and software upgrade.',
+        icon: ChartBarIcon,
+      }
     ],
     documentation: [
        { 
@@ -124,6 +147,7 @@ export const vendors: Vendor[] = [
     phone: '',
     website: 'https://www.infraflow.io',
     isClaimed: false,
+    isVerified: false,
     documentation: [],
     articles: [],
     videos: [],
@@ -138,10 +162,29 @@ export const vendors: Vendor[] = [
     phone: '1-877-555-PURE',
     website: 'https://www.purecycle.net',
     isClaimed: true,
+    isVerified: true,
     contacts: [
       { id: 'c004', name: 'Marcus Thorne', title: 'Director of R&D', email: 'm.thorne@purecycle.net', avatarUrl: 'https://picsum.photos/seed/marcus/100/100' },
       { id: 'c005', name: 'Sophia Rodriguez', title: 'Lead Process Engineer', email: 's.rodriguez@purecycle.net', avatarUrl: 'https://picsum.photos/seed/sophia/100/100' },
       { id: 'c006', name: 'David Lee', title: 'Client Relations Manager', email: 'd.lee@purecycle.net', avatarUrl: 'https://picsum.photos/seed/david/100/100' },
+    ],
+    kpis: [
+       {
+        id: 'kpi003',
+        objective: 'Increase Biogas Production for Energy Neutrality',
+        measurableOutcome: 'Boost anaerobic digester biogas yield by 25% within 18 months through process optimization.',
+        financialReturn: '~$350,000 / year in energy savings and renewable energy credits.',
+        investment: '~$550,000 for advanced process control (APC) system and digester upgrades.',
+        icon: LightningBoltIcon,
+      },
+      {
+        id: 'kpi004',
+        objective: 'Reduce Biosolids Disposal Costs',
+        measurableOutcome: 'Achieve a 40% reduction in final biosolids volume via advanced dewatering and thermal hydrolysis.',
+        financialReturn: '~$180,000 / year in reduced hauling and landfill tipping fees.',
+        investment: '~$900,000 for new dewatering equipment (phased over 3 years).',
+        icon: BeakerIcon,
+      }
     ],
     documentation: sampleDocs,
     articles: [
@@ -167,6 +210,7 @@ export const vendors: Vendor[] = [
     phone: '',
     website: 'https://www.stormguard.com',
     isClaimed: false,
+    isVerified: false,
     documentation: [],
     articles: [],
     videos: [],
@@ -181,6 +225,7 @@ export const vendors: Vendor[] = [
     phone: '1-855-555-DATA',
     website: 'https://www.datacurrent.ai',
     isClaimed: true,
+    isVerified: false,
     contacts: [
       { id: 'c007', name: 'Isabelle Moreau', title: 'VP of Product (Digital Twin)', email: 'i.moreau@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/isabelle/100/100' },
       { id: 'c008', name: 'Leo Gallagher', title: 'Senior Data Scientist', email: 'l.gallagher@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/leo/100/100' },
@@ -199,6 +244,63 @@ export const vendors: Vendor[] = [
       { id: 'web007', title: 'Past: Cybersecurity for Critical Infrastructure', description: 'Best practices for securing OT and IT systems in the water sector.', dateTime: '2024-07-12T14:00:00Z', url: '#', isLive: false },
     ],
   }
+];
+
+export const currentUser: User = {
+    id: 'user-current',
+    name: 'You',
+    avatarUrl: 'https://picsum.photos/seed/you/100/100',
+    xp: 6200,
+    tierId: 'T4',
+    badges: ['B01', 'B02', 'B04'],
+    stats: {
+        commentsPosted: 38,
+        documentsUploaded: 4,
+        insightfulMarks: 12,
+    }
+};
+
+export const users: User[] = [
+    { 
+        id: 'user-1', 
+        name: 'Alex Johnson', 
+        avatarUrl: 'https://picsum.photos/seed/alex/100/100',
+        xp: 1850,
+        tierId: 'T2',
+        badges: ['B01'],
+        stats: {
+            commentsPosted: 15,
+            documentsUploaded: 1,
+            insightfulMarks: 4,
+        }
+    },
+    { 
+        id: 'user-2', 
+        name: 'Brenda Smith', 
+        avatarUrl: 'https://picsum.photos/seed/brenda/100/100',
+        xp: 220,
+        tierId: 'T0',
+        badges: [],
+        stats: {
+            commentsPosted: 5,
+            documentsUploaded: 1,
+            insightfulMarks: 1,
+        }
+    },
+    { 
+        id: 'user-3', 
+        name: 'Carlos Gomez', 
+        avatarUrl: 'https://picsum.photos/seed/carlos/100/100',
+        xp: 16500,
+        tierId: 'T5',
+        badges: ['B01', 'B02', 'B03'],
+        stats: {
+            commentsPosted: 52,
+            documentsUploaded: 8,
+            insightfulMarks: 25,
+        }
+    },
+    currentUser
 ];
 
 export const initialTerms: LexiconTerm[] = [
@@ -226,6 +328,50 @@ export const initialTerms: LexiconTerm[] = [
     caseStudiesCount: 15,
     demoVideoUrl: 'https://example.com/demo-nrw',
     handbookUrl: 'https://example.com/handbook-nrw.pdf',
+    userRating: 4,
+    comments: [
+      {
+        id: 'tc001',
+        user: users.find(u => u.id === 'user-2')!,
+        text: "The IWA water balance is the gold standard, but it can be complex to implement for smaller utilities. Has anyone had success with simplified versions?",
+        timestamp: '2024-07-18T14:30:00Z',
+        replies: [
+          {
+            id: 'tc003',
+            user: users.find(u => u.id === 'user-1')!,
+            text: "Great point, Brenda. We used a simplified spreadsheet model for the first year which helped get buy-in before we invested in a full hydraulic model.",
+            timestamp: '2024-07-18T15:00:00Z',
+            replies: [],
+          }
+        ]
+      },
+      {
+        id: 'tc002',
+        user: users.find(u => u.id === 'user-3')!,
+        text: "Acoustic leak detection has been a game-changer for us. We've found leaks we would have never located otherwise, saving an estimated 50 million gallons last year.",
+        timestamp: '2024-07-17T09:15:00Z',
+      }
+    ],
+    documents: [
+       {
+        id: 'td001',
+        fileName: 'City_of_Oakwood_NRW_Case_Study.pdf',
+        fileType: 'PDF',
+        fileSize: '2.1 MB',
+        uploadedBy: users.find(u => u.id === 'user-1')!,
+        timestamp: '2024-07-16T11:00:00Z',
+        url: '#',
+      },
+      {
+        id: 'td002',
+        fileName: 'DMA_Implementation_Checklist.docx',
+        fileType: 'DOCX',
+        fileSize: '150 KB',
+        uploadedBy: users.find(u => u.id === 'user-2')!,
+        timestamp: '2024-07-15T16:45:00Z',
+        url: '#',
+      }
+    ],
   },
   {
     id: 't002',
@@ -250,6 +396,7 @@ export const initialTerms: LexiconTerm[] = [
     isPremium: false,
     caseStudiesCount: 8,
     handbookUrl: 'https://example.com/handbook-ami.pdf',
+    userRating: 5,
   },
   {
     id: 't003',
@@ -671,6 +818,117 @@ export const initialTerms: LexiconTerm[] = [
   }
 ];
 
+export const flashcards: Flashcard[] = initialTerms.map(term => ({
+    id: `fc-${term.id}`,
+    termId: term.id,
+    front: {
+        title: term.term,
+        context: term.category,
+    },
+    back: {
+        definition: term.plainLanguageDefinition,
+        imageUrl: `https://picsum.photos/seed/${term.id}/600/400`,
+        // Add vendor and video links for specific cards
+        ...(term.id === 't001' && { vendorId: 'v001', videoUrl: sampleHlsUrl }), // NRW
+        ...(term.id === 't002' && { vendorId: 'v002' }), // AMI
+        ...(term.id === 't003' && { vendorId: 'v003', videoUrl: sampleHlsUrl }), // MBR
+        ...(term.id === 't005' && { vendorId: 'v005', videoUrl: sampleHlsUrl }), // Hydraulic Modeling
+        ...(term.id === 't009' && { vendorId: 'v005', videoUrl: sampleHlsUrl }), // Digital Twin
+    },
+}));
+
+export const flashcardDecks: FlashcardDeck[] = [
+    {
+        id: 'deck001',
+        title: 'One Water Minute',
+        description: "A daily, snackable card to keep you sharp. Swipe through the last 7 days.",
+        category: 'By Category',
+        subcategory: 'Daily',
+        cardIds: flashcards.slice(0, 7).map(fc => fc.id),
+        coverImageUrl: 'https://picsum.photos/seed/dailydeck/600/400',
+    },
+    {
+        id: 'deck002',
+        title: 'Utility Management Fundamentals',
+        description: 'Master the core concepts of running a modern water utility, from assets to finance.',
+        category: 'By Category',
+        subcategory: 'Utility Management',
+        cardIds: flashcards.filter(fc => fc.front.context === 'Utility Management').map(fc => fc.id),
+        coverImageUrl: 'https://picsum.photos/seed/utilitydeck/600/400',
+    },
+    {
+        id: 'deck003',
+        title: 'Wastewater Treatment Essentials',
+        description: 'Explore the processes that turn wastewater into a valuable resource.',
+        category: 'By Category',
+        subcategory: 'Wastewater Treatment',
+        cardIds: flashcards.filter(fc => fc.front.context === 'Wastewater Treatment').map(fc => fc.id),
+        coverImageUrl: 'https://picsum.photos/seed/wwdeck/600/400',
+    },
+    {
+        id: 'deck004',
+        title: 'AquaTech Solutions Deck',
+        description: 'Learn about the key terms and technologies related to AquaTech Solutions.',
+        category: 'Vendor Decks',
+        vendorId: 'v001',
+        cardIds: flashcards.filter(fc => initialTerms.find(t => t.id === fc.termId)?.linkedVendorIds.includes('v001')).map(fc => fc.id),
+        coverImageUrl: 'https://picsum.photos/seed/aquatechdeck/600/400',
+    },
+    {
+        id: 'deck005',
+        title: 'Stormwater & Green Infrastructure',
+        description: 'Understand modern approaches to managing stormwater and enhancing urban resilience.',
+        category: 'By Category',
+        subcategory: 'Stormwater Management',
+        cardIds: flashcards.filter(fc => fc.front.context === 'Stormwater Management').map(fc => fc.id),
+        coverImageUrl: 'https://picsum.photos/seed/stormdeck/600/400',
+    },
+    {
+        id: 'deck006',
+        title: 'EPA Compliance Essentials',
+        description: 'Key regulations and standards from the EPA that every water professional should know.',
+        category: 'Regulatory & Compliance',
+        cardIds: ['fc-t018', 'fc-t013', 'fc-t011', 'fc-t007'],
+        coverImageUrl: 'https://picsum.photos/seed/regdeck1/600/400',
+    },
+    {
+        id: 'deck007',
+        title: 'AWWA Standards Overview',
+        description: 'A primer on important American Water Works Association standards for system design and management.',
+        category: 'Regulatory & Compliance',
+        cardIds: ['fc-t001', 'fc-t012', 'fc-t005'],
+        coverImageUrl: 'https://picsum.photos/seed/regdeck2/600/400',
+    }
+];
+
+export const educationPathways: EducationPathway[] = [
+    {
+        id: 'path001',
+        title: 'From Data to Decisions',
+        description: 'Master the digital water journey, from SCADA and AMI data pipelines to governance and AI-driven insights for operational excellence.',
+        deckIds: ['deck002'], // Placeholder, should include decks on data pipelines, governance, etc.
+        coverImageUrl: 'https://picsum.photos/seed/pathway1/600/400',
+        credentialName: 'Digital Water Specialist Level 1',
+    },
+    {
+        id: 'path002',
+        title: 'Asset Risk to Capital Plan',
+        description: 'Learn to translate asset condition and risk into a defensible, data-driven capital improvement plan (CIP) and secure funding.',
+        deckIds: ['deck002'], // Placeholder, should include decks on condition assessment, risk, funding.
+        coverImageUrl: 'https://picsum.photos/seed/pathway2/600/400',
+        credentialName: 'Asset Management Strategist',
+    },
+    {
+        id: 'path003',
+        title: 'Flood & Water Quality Resilience',
+        description: 'A comprehensive pathway covering stormwater management, hydraulic modeling, and the use of AI sensors to build resilient systems.',
+        deckIds: ['deck005'], // Placeholder
+        coverImageUrl: 'https://picsum.photos/seed/pathway3/600/400',
+        credentialName: 'Urban Resilience Professional',
+    }
+];
+
+
 export const videoCategories = [
   'News',
   'Infrastructure',
@@ -685,30 +943,18 @@ export const videoCategories = [
   'Blockchain'
 ];
 
-export const currentUser: User = {
-    id: 'user-current',
-    name: 'You',
-    avatarUrl: 'https://picsum.photos/seed/you/100/100'
-};
-
-const users: User[] = [
-    { id: 'user-1', name: 'Alex Johnson', avatarUrl: 'https://picsum.photos/seed/alex/100/100' },
-    { id: 'user-2', name: 'Brenda Smith', avatarUrl: 'https://picsum.photos/seed/brenda/100/100' },
-    { id: 'user-3', name: 'Carlos Gomez', avatarUrl: 'https://picsum.photos/seed/carlos/100/100' },
-    currentUser
-];
 
 const comments: Comment[] = [
     {
         id: 'c-1',
-        user: users[0],
+        user: users.find(u => u.id === 'user-1')!,
         text: 'This was an excellent overview. The section on smart grids was particularly insightful. Has anyone implemented a similar system in a mid-sized city?',
         timestamp: '2024-07-15T12:30:00Z',
         likes: 15,
         replies: [
             {
                 id: 'c-2',
-                user: users[1],
+                user: users.find(u => u.id === 'user-2')!,
                 text: 'We have! We saw a 15% reduction in line loss and much faster fault detection. The upfront cost was high, but the ROI is looking promising after just two years.',
                 timestamp: '2024-07-15T14:00:00Z',
                 likes: 8,
@@ -716,7 +962,7 @@ const comments: Comment[] = [
             },
              {
                 id: 'c-3',
-                user: users[0],
+                user: users.find(u => u.id === 'user-1')!,
                 text: 'That\'s great to hear, Brenda. What was the biggest challenge during implementation?',
                 timestamp: '2024-07-15T16:45:00Z',
                 likes: 4,
@@ -726,15 +972,13 @@ const comments: Comment[] = [
     },
     {
         id: 'c-4',
-        user: users[2],
+        user: users.find(u => u.id === 'user-3')!,
         text: 'The discussion on autonomous transport seems a bit optimistic. The regulatory hurdles alone seem massive.',
         timestamp: '2024-07-16T09:00:00Z',
         likes: 3,
         replies: []
     }
 ];
-
-const sampleHlsUrl = 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8';
 
 export const droobiVideos: DroobiVideo[] = [
   {
@@ -1047,5 +1291,75 @@ export const onDemandSessions: OnDemandSession[] = [
     durationMinutes: 60,
     watchUrl: '#',
     downloadUrl: '#'
+  }
+];
+
+export const manuals: Manual[] = [
+  {
+    id: 'm001',
+    title: 'AquaTech AT-Filter-5000 O&M Manual',
+    vendorId: 'v001',
+    modelNumber: 'AT-F5000',
+    assetType: 'Filtration System',
+    fileUrl: '#',
+    coverImageUrl: 'https://picsum.photos/seed/manual1/600/800',
+    uploadedAt: '2024-06-15T10:00:00Z',
+    summary: 'Comprehensive operation and maintenance guide for the AT-Filter-5000 series, including troubleshooting and parts list.'
+  },
+  {
+    id: 'm002',
+    title: 'InfraFlow Dynamics Hydro-Sensor v3 Installation',
+    vendorId: 'v002',
+    modelNumber: 'IFD-HS-3.0',
+    assetType: 'Sensor',
+    fileUrl: '#',
+    coverImageUrl: 'https://picsum.photos/seed/manual2/600/800',
+    uploadedAt: '2024-07-01T11:20:00Z',
+    summary: 'Step-by-step installation guide for the Hydro-Sensor v3, with wiring diagrams and calibration procedures.'
+  },
+  {
+    id: 'm003',
+    title: 'PureCycle Bio-Reactor Series B Maintenance',
+    vendorId: 'v003',
+    modelNumber: 'PC-BR-B',
+    partNumber: 'PC-BR-B-MNT-001',
+    assetType: 'Filtration System',
+    fileUrl: '#',
+    coverImageUrl: 'https://picsum.photos/seed/manual3/600/800',
+    uploadedAt: '2024-05-20T09:00:00Z',
+    summary: 'Detailed preventative maintenance schedule and procedures for the PureCycle Bio-Reactor Series B.'
+  },
+  {
+    id: 'm004',
+    title: 'DataCurrent SCADA-Link 9000 Gateway',
+    vendorId: 'v005',
+    modelNumber: 'DC-SL9K',
+    assetType: 'Sensor',
+    fileUrl: '#',
+    coverImageUrl: 'https://picsum.photos/seed/manual4/600/800',
+    uploadedAt: '2024-07-10T14:00:00Z',
+    summary: 'Configuration and administration manual for the SCADA-Link 9000 series data gateway.'
+  },
+  {
+    id: 'm005',
+    title: 'Standard Fire Hydrant Model 77B',
+    vendorId: 'v001', // Re-using a vendor for variety
+    modelNumber: 'SFH-77B',
+    assetType: 'Hydrant',
+    fileUrl: '#',
+    coverImageUrl: 'https://picsum.photos/seed/manual5/600/800',
+    uploadedAt: '2023-11-01T08:00:00Z',
+    summary: 'O&M manual for the Model 77B dry barrel fire hydrant, covering installation, testing, and repair.'
+  },
+  {
+    id: 'm006',
+    title: 'Series 400 Butterfly Valve',
+    vendorId: 'v002',
+    modelNumber: 'S400-BV',
+    assetType: 'Valve',
+    fileUrl: '#',
+    coverImageUrl: 'https://picsum.photos/seed/manual6/600/800',
+    uploadedAt: '2024-02-18T16:30:00Z',
+    summary: 'Technical specifications and installation guide for the Series 400 industrial butterfly valves.'
   }
 ];

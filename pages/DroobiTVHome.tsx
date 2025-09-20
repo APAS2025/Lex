@@ -7,7 +7,7 @@ import Loader from '../components/Loader';
 import { getAIRecommendations, performAISearch } from '../services/geminiService';
 import { PlayIcon, ClockIcon, SparklesIcon, SearchIcon, XIcon, NewspaperIcon, StarIcon } from '../components/Icons';
 
-const VideoCategoryRow: React.FC<{ category: string; videos: DroobiVideo[]; icon?: React.ReactNode }> = ({ category, videos, icon }) => {
+const VideoCategoryRow: React.FC<{ category: string; videos: DroobiVideo[]; icon?: React.ReactNode; showProgress?: boolean }> = ({ category, videos, icon, showProgress = false }) => {
     if (videos.length === 0) return null;
 
     return (
@@ -18,7 +18,7 @@ const VideoCategoryRow: React.FC<{ category: string; videos: DroobiVideo[]; icon
             </h2>
             <div className="flex overflow-x-auto space-x-4 lg:space-x-6 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
                 {videos.map(video => (
-                    <VideoCard key={video.id} video={video} />
+                    <VideoCard key={video.id} video={video} showProgress={showProgress} />
                 ))}
             </div>
         </section>
@@ -217,12 +217,15 @@ const DroobiTVHome: React.FC<DroobiTVHomeProps> = ({ watchHistoryIds, playlists 
                         />
                     )}
                     
-                    {/* Watch History */}
-                    <VideoCategoryRow 
-                        category="Continue Watching" 
-                        videos={watchHistoryVideos}
-                        icon={<ClockIcon className="h-6 w-6 mr-3 text-blue-400" />}
-                    />
+                    {/* Continue Watching */}
+                    {watchHistoryVideos.length > 0 && (
+                        <VideoCategoryRow 
+                            category="Continue Watching" 
+                            videos={watchHistoryVideos}
+                            icon={<ClockIcon className="h-6 w-6 mr-3 text-blue-400" />}
+                            showProgress={true}
+                        />
+                    )}
 
                     {/* Other Categories */}
                     {regularVideoCategories.map(category => (

@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import type { Comment as CommentType } from '../types';
 import { currentUser } from '../data/mockData';
+import { getTierById } from '../utils/gamification';
 import { ThumbUpIcon, ArrowUturnUpIcon } from './Icons';
 
 interface CommentProps {
@@ -32,6 +34,8 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [replies, setReplies] = useState(comment.replies || []);
 
+    const tier = getTierById(comment.user.tierId);
+
     const handleLike = () => {
         setLikes(isLiked ? likes - 1 : likes + 1);
         setIsLiked(!isLiked);
@@ -57,12 +61,21 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
 
     return (
         <div className="flex items-start space-x-3 sm:space-x-4">
-            <img src={comment.user.avatarUrl} alt={comment.user.name} className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0"/>
+            <Link to={`/profile/${comment.user.id}`}>
+                <img src={comment.user.avatarUrl} alt={comment.user.name} className="h-10 w-10 sm:h-12 sm:w-12 rounded-full shrink-0"/>
+            </Link>
             <div className="flex-grow">
                 <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10 p-4">
                     <div className="flex items-center justify-between">
-                        <p className="font-bold text-slate-200">{comment.user.name}</p>
-                        <p className="text-xs text-slate-400">{formatTimestamp(comment.timestamp)}</p>
+                        <div className="flex items-center space-x-2 flex-wrap">
+                            <Link to={`/profile/${comment.user.id}`} className="font-bold text-slate-200 hover:underline">{comment.user.name}</Link>
+                            {tier && (
+                                <span className="text-xs font-semibold text-cyan-300 bg-cyan-900/50 px-2 py-0.5 rounded-full ring-1 ring-inset ring-cyan-500/30">
+                                    {tier.name}
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-xs text-slate-400 shrink-0 ml-2">{formatTimestamp(comment.timestamp)}</p>
                     </div>
                     <p className="mt-2 text-slate-300 whitespace-pre-wrap">{comment.text}</p>
                 </div>

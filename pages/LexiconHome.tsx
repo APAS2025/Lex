@@ -1,4 +1,7 @@
-import React, { useState, useMemo, useCallback } from 'react';
+
+
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { LexiconTerm } from '../types';
 import { initialTerms } from '../data/mockData';
 import TermCard from '../components/TermCard';
@@ -6,13 +9,29 @@ import Loader from '../components/Loader';
 import { generateLexiconEntry } from '../services/geminiService';
 import AlphabetFilter from '../components/AlphabetFilter';
 
+const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
+    // FIX: Replaced NodeJS.Timeout with ReturnType<typeof setTimeout> for browser compatibility.
+    let timeout: ReturnType<typeof setTimeout>;
+    return (...args: Parameters<F>): void => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), waitFor);
+    };
+};
+
 const LexiconHome: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('q');
+
   const [terms, setTerms] = useState<LexiconTerm[]>(initialTerms);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(query || '');
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null);
   const [newTermInput, setNewTermInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setSearchTerm(query || '');
+  }, [query]);
 
   const filteredTerms = useMemo(() => {
     const sortedTerms = [...terms].sort((a, b) => a.term.localeCompare(b.term));
@@ -54,6 +73,31 @@ const LexiconHome: React.FC = () => {
     }
   }, [newTermInput]);
 
+  const handleRateTerm = useCallback((termId: string, rating: number) => {
+    setTerms(prevTerms =>
+      prevTerms.map(term =>
+        term.id === termId ? { ...term, userRating: rating === term.userRating ? 0 : rating } : term
+      )
+    );
+  }, []);
+
+  const updateQuery = (newSearchTerm: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (newSearchTerm.trim()) {
+      newParams.set('q', newSearchTerm);
+    } else {
+      newParams.delete('q');
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+  
+  const debouncedUpdateQuery = useCallback(debounce(updateQuery, 300), [searchParams]);
+
+  const handleLocalSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newSearchTerm = e.target.value;
+      setSearchTerm(newSearchTerm);
+      debouncedUpdateQuery(newSearchTerm);
+  };
 
   return (
     <div className="container mx-auto">
@@ -76,7 +120,7 @@ const LexiconHome: React.FC = () => {
             type="text"
             placeholder="e.g., 'Non-Revenue Water' or 'AquaTech'..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleLocalSearchChange}
             className="w-full px-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
         </div>
@@ -115,7 +159,7 @@ const LexiconHome: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredTerms.map((term) => (
-          <TermCard key={term.id} term={term} />
+          <TermCard key={term.id} term={term} onRate={handleRateTerm} />
         ))}
       </div>
       {filteredTerms.length === 0 && !isLoading && (

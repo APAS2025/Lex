@@ -1,9 +1,10 @@
-
 import React, { useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { vendors } from '../data/mockData';
 import type { DocumentationItem, PerformanceMetric } from '../types';
 import KeyContacts from '../components/KeyContacts';
+import VerifiedBadge from '../components/VerifiedBadge';
+import KpiCard from '../components/KpiCard';
 import {
     ChevronLeftIcon,
     VideoCameraIcon,
@@ -24,7 +25,8 @@ import {
     ClockIcon,
     DocumentDownloadIcon,
     MegaphoneIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
+    ChartBarIcon,
 } from '../components/Icons';
 
 const DocumentListItemIcon: React.FC<{ category: string; className?: string }> = ({ category, className }) => {
@@ -254,7 +256,7 @@ const VendorMicrosite: React.FC = () => {
                                     <span>Host live expert sessions on Droobi TV to showcase your thought leadership.</span>
                                 </li>
                             </ul>
-                            <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg shadow-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 transition text-lg">
+                            <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 text-lg transform-gpu transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl hover:shadow-blue-500/40">
                                 Claim Profile & Unlock Features
                             </button>
                         </div>
@@ -277,7 +279,10 @@ const VendorMicrosite: React.FC = () => {
             <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10 p-8 mb-8 flex flex-col md:flex-row items-center md:space-x-8 text-center md:text-left">
                 <img src={vendor.logoUrl} alt={`${vendor.name} logo`} className="h-32 w-32 object-contain rounded-lg bg-white p-2 shrink-0 mb-6 md:mb-0" />
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-slate-100">{vendor.name}</h1>
+                    <div className="flex items-center justify-center md:justify-start space-x-3">
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-100">{vendor.name}</h1>
+                        {vendor.isVerified && <VerifiedBadge className="h-8 w-8" />}
+                    </div>
                     <p className="mt-2 text-lg text-slate-400">{vendor.description}</p>
                 </div>
             </div>
@@ -326,6 +331,24 @@ const VendorMicrosite: React.FC = () => {
                                         {popularDocuments && popularDocuments.map(doc => <DocumentListItem key={doc.id} document={doc} />)}
                                     </div>
                                 </div>
+                            </div>
+                        </section>
+                    )}
+
+                     {/* Key Performance Indicators Section */}
+                    {vendor.kpis && vendor.kpis.length > 0 && (
+                        <section>
+                            <h2 className="text-3xl font-bold text-slate-100 tracking-tight mb-2 flex items-center">
+                                <ChartBarIcon className="h-8 w-8 mr-3 text-blue-400" />
+                                Key Performance Indicators
+                            </h2>
+                            <p className="text-lg text-slate-400 mb-8">
+                                Measurable outcomes and financial returns for smart objectives.
+                            </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {vendor.kpis.map(kpi => (
+                                    <KpiCard key={kpi.id} kpi={kpi} />
+                                ))}
                             </div>
                         </section>
                     )}

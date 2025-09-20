@@ -14,6 +14,16 @@ export type Article = Database['public']['Tables']['articles']['Row'];
 export type Video = Database['public']['Tables']['videos']['Row'];
 export type Webinar = Database['public']['Tables']['webinars']['Row'];
 export type ContactPerson = Database['public']['Tables']['contact_persons']['Row'];
+
+export type Kpi = {
+  id: string;
+  objective: string;
+  measurableOutcome: string;
+  financialReturn: string;
+  investment: string;
+  icon: React.FC<{className?: string}>;
+};
+
 export type Vendor = Database['public']['Tables']['vendors']['Row'] & {
     // Relationships can be explicitly typed for convenience
     documentation: DocumentationItem[];
@@ -21,12 +31,85 @@ export type Vendor = Database['public']['Tables']['vendors']['Row'] & {
     videos: Video[];
     webinars: Webinar[];
     contacts?: ContactPerson[];
+    isVerified: boolean;
+    kpis?: Kpi[];
 };
 export type ImpactMetric = Database['public']['Tables']['impact_metrics']['Row'];
 export type ResilienceMapping = Database['public']['Json']['resilience_mapping'];
-export type LexiconTerm = Database['public']['Tables']['lexicon_terms']['Row'];
 
-export type User = Database['public']['Tables']['users']['Row'];
+// Gamification Types
+export type ProfessionalTier = {
+  id: string;
+  name: string;
+  minXp: number;
+  icon: React.FC<{className?: string}>;
+};
+
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.FC<{className?: string}>;
+};
+
+export type GamificationStats = {
+  commentsPosted: number;
+  documentsUploaded: number;
+  insightfulMarks: number;
+};
+
+export type User = Database['public']['Tables']['users']['Row'] & {
+  xp: number;
+  tierId: string;
+  badges: string[];
+  stats: GamificationStats;
+};
+
+export type TermComment = {
+  id: string;
+  user: User;
+  text: string;
+  timestamp: string;
+  replies?: TermComment[];
+};
+
+export type TermDocument = {
+  id: string;
+  fileName: string;
+  fileType: string; // e.g., 'PDF', 'Word'
+  fileSize: string; // e.g., '2.5 MB'
+  uploadedBy: User;
+  timestamp: string;
+  url: string; // download link
+};
+
+export type LexiconTerm = Database['public']['Tables']['lexicon_terms']['Row'] & {
+    comments?: TermComment[];
+    documents?: TermDocument[];
+    userRating?: number;
+};
+
+export type Manual = {
+  id: string;
+  title: string;
+  vendorId: string;
+  modelNumber: string;
+  partNumber?: string;
+  assetType: 'Pump' | 'Sensor' | 'Hydrant' | 'Valve' | 'Filtration System';
+  fileUrl: string; // URL to the PDF
+  coverImageUrl: string;
+  uploadedAt: string;
+  summary: string;
+};
+
+export type ConversationEntry = {
+  id: string;
+  role: 'user' | 'gemini' | 'loading' | 'error';
+  content: string;
+  feedback?: 'up' | 'down';
+};
+
+
 export type Comment = Database['public']['Tables']['comments']['Row'] & {
     // Typing relationships for nested structures
     user: User;
@@ -52,3 +135,39 @@ export type Session = Database['public']['Tables']['sessions']['Row'] & {
     speaker: Speaker;
 };
 export type OnDemandSession = Database['public']['Tables']['on_demand_sessions']['Row'];
+
+// Lexicon Academy Types
+export type Flashcard = {
+  id: string;
+  termId: string; // Link back to the full LexiconTerm
+  front: {
+    title: string;
+    context?: string; // e.g., category
+  };
+  back: {
+    definition: string;
+    imageUrl?: string;
+    vendorId?: string; // Link to a vendor for context
+    videoUrl?: string; // Link to a micro-video lesson
+  };
+};
+
+export type FlashcardDeck = {
+  id: string;
+  title: string;
+  description: string;
+  category: 'By Category' | 'Vendor Decks' | 'Regulatory & Compliance' | 'Deep Learning Pathways';
+  subcategory?: string; // e.g., 'Data', 'Asset Management' for 'By Category'
+  cardIds: string[];
+  coverImageUrl: string;
+  vendorId?: string;
+};
+
+export type EducationPathway = {
+  id: string;
+  title: string;
+  description: string;
+  deckIds: string[];
+  coverImageUrl: string;
+  credentialName: string; // e.g., "Flood Resilience Level 1"
+};

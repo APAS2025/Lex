@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { LexiconTerm, DroobiVideo, Playlist, AIRecommendation } from '../types';
 
@@ -110,6 +109,41 @@ export async function generateLexiconEntry(term: string): Promise<LexiconTerm> {
     }
     throw new Error("Failed to generate lexicon entry from AI. Please check the term and try again.");
   }
+}
+
+export async function askManual(manualSummary: string, userQuestion: string): Promise<string> {
+    const prompt = `
+        You are a specialized AI assistant. Your ONLY function is to answer questions based on the provided document summary.
+
+        **Strict Rules:**
+        1. You MUST answer the user's question using **only** the information found in the "DOCUMENT SUMMARY" section below.
+        2. Do NOT use any external knowledge, a-priori information, or make assumptions.
+        3. If the answer to the question cannot be found in the document summary, you MUST respond with: "I'm sorry, but I could not find the answer to that question in the provided manual summary." Do not add any other information.
+        4. When the answer involves lists, steps, or code-like text (e.g., part numbers, commands), format your response using simple Markdown. Use bullet points (-), numbered lists (1.), and backticks for code (\`code\`).
+
+        DOCUMENT SUMMARY:
+        ---
+        ${manualSummary}
+        ---
+
+        USER QUESTION:
+        "${userQuestion}"
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
+
+        return response.text;
+    } catch (error) {
+        console.error("Error asking manual:", error);
+        if (error instanceof Error && error.message.includes('429')) {
+            throw new Error("API rate limit exceeded. Please try again later.");
+        }
+        throw new Error("Failed to get an answer from the AI. Please try again.");
+    }
 }
 
 const aiRecommendationSchema = {

@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import type { LexiconTerm, Vendor } from '../types';
 import { initialTerms, vendors } from '../data/mockData';
 import PremiumBadge from '../components/PremiumBadge';
+import VerifiedBadge from '../components/VerifiedBadge';
 import { 
     ChevronLeftIcon, 
     BookOpenIcon,
@@ -21,8 +22,11 @@ import {
     WifiIcon,
     PhoneIcon,
     ShareIcon,
-    CheckIcon
+    CheckIcon,
+    LightBulbIcon
 } from '../components/Icons';
+import CommunityContributions from '../components/CommunityContributions';
+import FeedbackModal from '../components/FeedbackModal';
 
 const InfoCard: React.FC<{title: string; icon: React.ReactNode; children: React.ReactNode}> = ({ title, icon, children }) => (
     <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10 p-6">
@@ -37,27 +41,32 @@ const InfoCard: React.FC<{title: string; icon: React.ReactNode; children: React.
 );
 
 const VendorCard: React.FC<{ vendor: Vendor }> = ({ vendor }) => (
-    <div className="bg-slate-900/50 rounded-lg hover:bg-slate-700/50 transition-colors duration-200 ring-1 ring-slate-800 p-5 h-full flex flex-col">
+    <div className="bg-slate-800/60 backdrop-blur-sm rounded-lg ring-1 ring-white/10 hover:ring-blue-400 hover:bg-blue-900/40 transition-all duration-300 p-5 h-full flex flex-col group glow-on-hover">
         <div className="flex items-center mb-3">
             <img src={vendor.logoUrl} alt={`${vendor.name} logo`} className="h-12 w-12 object-contain rounded-md bg-white p-1 shrink-0" />
-            <h4 className="font-bold text-slate-200 ml-4 text-lg">{vendor.name}</h4>
+            <div className="ml-4">
+                <div className="flex items-center space-x-1.5">
+                    <h4 className="font-bold text-slate-100 text-lg">{vendor.name}</h4>
+                    {vendor.isVerified && <VerifiedBadge className="h-5 w-5" />}
+                </div>
+            </div>
         </div>
-        <p className="text-sm text-slate-400 line-clamp-3 mb-4 flex-grow">{vendor.description}</p>
+        <p className="text-sm text-slate-300 line-clamp-3 mb-4 flex-grow">{vendor.description}</p>
         
         {vendor.isClaimed ? (
-            <div className="space-y-2 text-sm text-slate-400 border-t border-slate-700/50 pt-3">
+             <div className="space-y-2 text-sm text-slate-300 border-t border-slate-700 pt-3 group-hover:border-blue-500/50 transition-colors">
                 <div className="flex items-center">
                     <MailIcon className="h-4 w-4 mr-2 shrink-0 text-slate-500" />
-                    <a href={`mailto:${vendor.email}`} className="truncate hover:text-blue-400 transition-colors">{vendor.email}</a>
+                    <a href={`mailto:${vendor.email}`} className="truncate hover:text-blue-300 transition-colors">{vendor.email}</a>
                 </div>
                 <div className="flex items-center">
                     <PhoneIcon className="h-4 w-4 mr-2 shrink-0 text-slate-500" />
-                    <a href={`tel:${vendor.phone.replace(/-/g, '')}`} className="truncate hover:text-blue-400 transition-colors">{vendor.phone}</a>
+                    <a href={`tel:${vendor.phone.replace(/-/g, '')}`} className="truncate hover:text-blue-300 transition-colors">{vendor.phone}</a>
                 </div>
             </div>
         ) : (
-             <div className="text-sm text-center border-t border-dashed border-slate-700/50 pt-3 mt-auto">
-                <span className="font-semibold text-blue-400">Claim this profile to connect</span>
+             <div className="text-sm text-center border-t border-dashed border-slate-700 pt-3 mt-auto">
+                <span className="font-semibold text-blue-400 group-hover:text-blue-300 transition-colors">Claim this profile to connect</span>
             </div>
         )}
     </div>
@@ -68,34 +77,49 @@ const CollapsibleVendors: React.FC<{ vendors: Vendor[] }> = ({ vendors }) => {
 
     if (vendors.length === 0) {
         return (
-            <div className="flex items-center space-x-2 text-slate-500">
+            <div className="flex items-center space-x-2 text-slate-500 p-6 bg-slate-800/50 rounded-xl ring-1 ring-white/10">
                 <BriefcaseIcon className="h-6 w-6" />
-                <span className="font-semibold">0 Vendors</span>
+                <span className="font-semibold">0 Vendors Linked</span>
             </div>
         );
     }
 
     return (
-        <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10">
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex justify-between items-center p-4 text-left"
-            >
-                <div className="flex items-center space-x-3">
-                    <BriefcaseIcon className="h-6 w-6 text-blue-400" />
-                    <span className="text-lg font-bold text-slate-100">View {vendors.length} Linked Vendor{vendors.length > 1 ? 's' : ''}</span>
-                </div>
-                <ChevronDownIcon className={`h-6 w-6 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {isOpen && (
-                <div className="p-4 pt-0 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {vendors.map(vendor => (
-                      <Link to={`/vendor/${vendor.id}`} key={vendor.id} className="block">
-                        <VendorCard vendor={vendor} />
-                      </Link>
-                    ))}
-                </div>
-            )}
+        <div className="relative bg-slate-900 rounded-2xl ring-2 ring-blue-500/50 shadow-2xl shadow-blue-500/20 overflow-hidden">
+            <div 
+                className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(56,189,248,0.2),rgba(255,255,255,0))] opacity-70"
+            ></div>
+            <div 
+                className="absolute inset-[-1000%] animate-[aurora_20s_ease-in-out_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#0c4a6e_0%,#3b82f6_50%,#0c4a6e_100%)]"
+                style={{ backgroundSize: '200% 200%' }}
+            ></div>
+
+            <div className="relative">
+                <button 
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full flex justify-between items-center p-6 text-left"
+                >
+                    <div className="flex items-center space-x-4">
+                        <div className="bg-blue-500/20 p-3 rounded-lg ring-1 ring-blue-500/30">
+                            <BriefcaseIcon className="h-8 w-8 text-blue-300" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-white">Vendor & Solution Marketplace</h3>
+                            <p className="text-sm text-blue-300">{vendors.length} Linked Partner{vendors.length > 1 ? 's' : ''}</p>
+                        </div>
+                    </div>
+                    <ChevronDownIcon className={`h-7 w-7 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {isOpen && (
+                    <div className="px-6 pb-6 pt-0 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {vendors.map(vendor => (
+                          <Link to={`/vendor/${vendor.id}`} key={vendor.id} className="block">
+                            <VendorCard vendor={vendor} />
+                          </Link>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
@@ -104,6 +128,7 @@ const CollapsibleVendors: React.FC<{ vendors: Vendor[] }> = ({ vendors }) => {
 const TermDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [isCopied, setIsCopied] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   const term: LexiconTerm | undefined = useMemo(() => initialTerms.find((t) => t.id === id), [id]);
 
@@ -139,11 +164,8 @@ const TermDetail: React.FC = () => {
     );
   }
 
-  const ActionCard = ({ children, href, onClick, isButton = false }: { children: React.ReactNode; href?: string; onClick?: () => void; isButton?: boolean }) => {
+  const ActionCard = ({ children, href }: { children: React.ReactNode; href?: string; }) => {
     const commonClasses = "group flex flex-col items-center justify-center text-center p-4 bg-slate-800/50 rounded-xl ring-1 ring-white/10 hover:ring-blue-500 hover:bg-slate-800 transition-all duration-200 h-full";
-    if (isButton) {
-        return <button onClick={onClick} className={commonClasses}>{children}</button>;
-    }
     return <a href={href} target="_blank" rel="noopener noreferrer" className={commonClasses}>{children}</a>;
   };
 
@@ -167,7 +189,7 @@ const TermDetail: React.FC = () => {
       {/* Resources Section */}
       <section className="mb-8">
         <h2 className="text-2xl font-bold text-slate-200 mb-4">Resources</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {term.demoVideoUrl && (
                 <ActionCard href={term.demoVideoUrl}>
                     <PlayIcon className="h-8 w-8 text-green-400 mb-2" />
@@ -187,15 +209,6 @@ const TermDetail: React.FC = () => {
                 <h3 className="font-semibold text-slate-200">{term.caseStudiesCount} Case Studies</h3>
                 <p className="text-sm text-slate-400">Real-world applications.</p>
             </ActionCard>
-            <ActionCard onClick={handleShare} isButton>
-                 {isCopied ? (
-                    <CheckIcon className="h-8 w-8 text-green-400 mb-2"/>
-                ) : (
-                    <ShareIcon className="h-8 w-8 text-teal-400 mb-2" />
-                )}
-                <h3 className="font-semibold text-slate-200">{isCopied ? 'Copied!' : 'Share Term'}</h3>
-                <p className="text-sm text-slate-400">{isCopied ? 'Link is on your clipboard' : 'Share with colleagues'}</p>
-            </ActionCard>
         </div>
       </section>
       
@@ -208,6 +221,11 @@ const TermDetail: React.FC = () => {
             <InfoCard title="Technical Definition" icon={<CodeIcon className="h-7 w-7 text-indigo-400" />}>
                 <p>{term.technicalDefinition}</p>
             </InfoCard>
+
+            <CommunityContributions 
+              initialComments={term.comments || []}
+              initialDocuments={term.documents || []}
+            />
 
             <InfoCard title="Design & O&M Notes" icon={<ClipboardListIcon className="h-7 w-7 text-cyan-400" />}>
                 <p>{term.designAndOMNotes}</p>
@@ -259,6 +277,43 @@ const TermDetail: React.FC = () => {
             )}
         </div>
       </div>
+
+      {/* Persistent Share Button */}
+      <button
+        onClick={handleShare}
+        className={`fixed bottom-28 right-8 z-40 flex items-center justify-center h-16 rounded-full text-white shadow-2xl shadow-cyan-500/40 transform-gpu transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-cyan-500/50 ${
+            isCopied 
+            ? 'w-auto px-5 bg-gradient-to-br from-green-500 to-emerald-500' 
+            : 'w-16 bg-gradient-to-br from-teal-500 to-cyan-500 hover:scale-110 focus:scale-110'
+        }`}
+        aria-label="Share term URL"
+        aria-live="polite"
+      >
+        {isCopied ? (
+            <>
+              <CheckIcon className="h-6 w-6 mr-2" />
+              <span className="font-semibold">Link copied!</span>
+            </>
+        ) : (
+            <ShareIcon className="h-8 w-8" />
+        )}
+      </button>
+
+      {/* Persistent Feedback Button */}
+      <button
+        onClick={() => setIsFeedbackModalOpen(true)}
+        className="fixed bottom-8 right-8 z-40 flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full text-white shadow-2xl shadow-blue-500/40 hover:scale-110 focus:scale-110 transform-gpu transition-transform duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-500/50"
+        aria-label="Provide feedback on this term"
+      >
+        <LightBulbIcon className="h-8 w-8" />
+      </button>
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
+        termName={term.term}
+      />
     </div>
   );
 };

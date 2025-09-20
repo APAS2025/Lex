@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { DroobiVideo } from '../types';
@@ -7,9 +6,10 @@ import { PlayIcon } from './Icons';
 interface VideoCardProps {
     video: DroobiVideo;
     isGrid?: boolean;
+    showProgress?: boolean;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ video, isGrid = false }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ video, isGrid = false, showProgress = false }) => {
     const progress = Math.floor(Math.random() * 80) + 10; // Random progress for visual effect
 
     const containerClasses = isGrid
@@ -32,9 +32,13 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, isGrid = false }) => {
                  <h3 className="text-white font-bold truncate">{video.title}</h3>
                  <p className="text-xs text-slate-300">{video.durationMinutes} min</p>
             </div>
-            {/* Progress Bar */}
-             <div className="absolute bottom-0 left-0 h-1 bg-red-600" style={{ width: `${progress}%` }}></div>
-             <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20"></div>
+            {/* Progress Bar: Only shown for 'Continue Watching' */}
+            {showProgress && (
+                <>
+                    <div className="absolute bottom-0 left-0 h-1 bg-red-600" style={{ width: `${progress}%` }}></div>
+                    <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20"></div>
+                </>
+            )}
         </Link>
     );
 };
