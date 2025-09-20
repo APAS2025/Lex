@@ -1405,15 +1405,33 @@ export const initialPlaylists: Playlist[] = [
   }
 ];
 
+export const speakers: Speaker[] = [
+  {
+    id: 'spk-001',
+    name: 'Mark Rodriguez',
+    affiliation: 'CyberWater Solutions',
+    avatarInitials: 'MR'
+  },
+  {
+    id: 'spk-002',
+    name: 'Dr. Sarah Chen',
+    affiliation: 'Water Tech Institute',
+    avatarInitials: 'SC'
+  },
+  {
+    id: 'spk-003',
+    name: 'Lisa Park',
+    affiliation: 'EcoFlow Engineering',
+    avatarInitials: 'LP'
+  }
+];
+
 export const droobiSessions: Session[] = [
   {
     id: 's001',
     title: 'SCADA Cybersecurity Best Practices',
-    speaker: {
-      name: 'Mark Rodriguez',
-      affiliation: 'CyberWater Solutions',
-      avatarInitials: 'MR'
-    },
+    speaker_id: 'spk-001',
+    speaker: speakers.find(s => s.id === 'spk-001')!,
     dateTime: new Date().toISOString(), // This will make it live for demo
     durationMinutes: 60,
     registeredAttendees: 456,
@@ -1428,11 +1446,8 @@ export const droobiSessions: Session[] = [
   {
     id: 's002',
     title: 'Advanced MBR Technologies for Municipal Applications',
-    speaker: {
-      name: 'Dr. Sarah Chen',
-      affiliation: 'Water Tech Institute',
-      avatarInitials: 'SC'
-    },
+    speaker_id: 'spk-002',
+    speaker: speakers.find(s => s.id === 'spk-002')!,
     dateTime: '2024-12-15T19:00:00Z', // UTC for 2:00 PM EST
     durationMinutes: 90,
     registeredAttendees: 234,
@@ -1446,11 +1461,8 @@ export const droobiSessions: Session[] = [
   {
     id: 's003',
     title: 'Green Infrastructure ROI Analysis',
-    speaker: {
-      name: 'Lisa Park',
-      affiliation: 'EcoFlow Engineering',
-      avatarInitials: 'LP'
-    },
+    speaker_id: 'spk-003',
+    speaker: speakers.find(s => s.id === 'spk-003')!,
     dateTime: '2024-12-20T20:00:00Z', // UTC for 3:00 PM EST
     durationMinutes: 75,
     registeredAttendees: 189,
