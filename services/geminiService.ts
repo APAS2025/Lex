@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import type { LexiconTerm, DroobiVideo, Playlist, AIRecommendation } from '../types';
+import type { LexiconTerm, DroobiVideo, Playlist, AIRecommendation, ConversationEntry } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
@@ -290,4 +290,59 @@ export async function performAISearch(
     console.error("Error performing AI search:", error);
     throw new Error("Failed to perform AI search. Please try again.");
   }
+}
+
+export async function askAICoach(cardFront: string, cardBack: string, conversation: ConversationEntry[]): Promise<string> {
+    // FIX: Replaced findLast with a compatible alternative for broader environment support.
+    const userQuestion = [...conversation].reverse().find(e => e.role === 'user')?.content || '';
+
+    const history = conversation
+        .slice(0, -1) // Exclude the current question
+        .filter(entry => entry.role === 'user' || entry.role === 'gemini')
+        .map(entry => {
+            if (entry.role === 'user') {
+                return `**User:** ${entry.content}`;
+            }
+            // This case must be 'gemini' due to the filter
+            let feedback_str = '';
+            if (entry.feedback === 'up') feedback_str = " (Feedback: Good answer)";
+            if (entry.feedback === 'down') feedback_str = " (Feedback: Bad answer)";
+            return `**AI Buddy:** ${entry.content}${feedback_str}`;
+        }).join('\n\n');
+
+    const prompt = `
+        You are an expert AI Study Buddy for "The Language of Water," a learning platform about public infrastructure. Your goal is to help users understand flashcard topics more deeply.
+        You are an expert in water and public infrastructure. Your tone should be encouraging and clear.
+
+        **Flashcard Context:**
+        - Topic: "${cardFront}"
+        - Key Information: "${cardBack}"
+        
+        **Conversation History (if any):**
+        ${history || 'No previous conversation.'}
+
+        **Your Task:**
+        1. Answer the user's latest question conversationally and helpfully, based on the flashcard's context and the conversation history.
+        2. Pay close attention to the feedback provided on your previous answers. If an answer was marked 'down', try to improve upon it (e.g., be simpler, more detailed, or provide a different kind of example). If an answer was marked 'up', maintain that style and quality.
+        3. You can simplify complex concepts, provide examples, or elaborate on the topic.
+        4. If the question asks for something outside the direct context (like a case study), you can generate a plausible, illustrative example relevant to the infrastructure sector. For example, if asked for a case study about a regulation, invent a city and a scenario where that regulation was applied.
+        5. Format your response with simple Markdown (bolding using **text**, unordered lists using -). Do not use headings.
+        
+        **User's Latest Question:**
+        "${userQuestion}"
+    `;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error asking AI Coach:", error);
+        if (error instanceof Error && error.message.includes('429')) {
+            throw new Error("API rate limit exceeded. Please try again later.");
+        }
+        throw new Error("Failed to get an answer from the AI. Please try again.");
+    }
 }

@@ -250,6 +250,7 @@ export const vendors: Vendor[] = [
 export const currentUser: User = {
     id: 'user-current',
     name: 'You',
+    email: 'test.user@example.com',
     avatarUrl: 'https://picsum.photos/seed/you/100/100',
     xp: 6200,
     tierId: 'T4',
@@ -264,7 +265,8 @@ export const currentUser: User = {
 export const users: User[] = [
     { 
         id: 'user-1', 
-        name: 'Alex Johnson', 
+        name: 'Alex Johnson',
+        email: 'alex.j@xylem.com',
         avatarUrl: 'https://picsum.photos/seed/alex/100/100',
         xp: 1850,
         tierId: 'T2',
@@ -278,6 +280,7 @@ export const users: User[] = [
     { 
         id: 'user-2', 
         name: 'Brenda Smith', 
+        email: 'brenda.smith@stantec.com',
         avatarUrl: 'https://picsum.photos/seed/brenda/100/100',
         xp: 220,
         tierId: 'T0',
@@ -291,6 +294,7 @@ export const users: User[] = [
     { 
         id: 'user-3', 
         name: 'Carlos Gomez', 
+        email: 'c.gomez@jacobs.com',
         avatarUrl: 'https://picsum.photos/seed/carlos/100/100',
         xp: 16500,
         tierId: 'T5',
@@ -994,6 +998,35 @@ export const flashcards: Flashcard[] = [
   ...seededFlashcards
 ];
 
+// Create a unique set of decks from the flashcards
+const decksFromFlashcards = Array.from(
+  new Map(
+    seededFlashcards.map(card => {
+      const deck: FlashcardDeck = {
+        id: card.deck_id,
+        title: `${getCategoryLabel(card.category_id)} Foundations`,
+        description: `Core concepts for the ${getCategoryLabel(card.category_id)} category.`,
+        category_id: card.category_id,
+        estimated_minutes: 5,
+        thumbnail_url: `https://picsum.photos/seed/${card.deck_id}/600/400`,
+        status: 'published',
+        language: 'en',
+        created_at: now,
+        updated_at: now,
+      };
+
+      // Special handling for the deck used in "One Water Minute" to make it sponsored
+      if (card.deck_id === 'deck_climate_basics') {
+        deck.sponsorship = {
+          sponsor_id: 'v001', // AquaTech Solutions
+        };
+      }
+      
+      return [deck.id, deck];
+    })
+  ).values()
+);
+
 export const flashcardDecks: FlashcardDeck[] = [
     {
         id: 'deck_one_water_minute',
@@ -1008,31 +1041,8 @@ export const flashcardDecks: FlashcardDeck[] = [
         created_at: now - oneDay,
         updated_at: now,
     },
-    // Create decks for each of the 9 seeded flashcards, adding sponsorship to one.
-    ...seededFlashcards.map(card => {
-        const deck: FlashcardDeck = {
-            id: card.deck_id,
-            title: `${getCategoryLabel(card.category_id)} Foundations`,
-            description: `Core concepts for the ${getCategoryLabel(card.category_id)} category.`,
-            category_id: card.category_id,
-            estimated_minutes: 5,
-            thumbnail_url: `https://picsum.photos/seed/${card.deck_id}/600/400`,
-            status: 'published',
-            language: 'en',
-            created_at: now,
-            updated_at: now,
-        };
-
-        // Special handling for the deck used in "One Water Minute" to make it sponsored
-        if (card.deck_id === 'deck_climate_basics') {
-            deck.sponsorship = {
-                sponsor_id: 'v001', // AquaTech Solutions
-            };
-        }
-        
-        return deck;
-    }),
-     {
+    ...decksFromFlashcards,
+    {
         id: 'deck_vendor_aquatech',
         title: 'AquaTech Solutions Deep Dive',
         description: 'Learn about the key terms and technologies related to AquaTech Solutions.',

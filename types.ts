@@ -60,6 +60,7 @@ export type GamificationStats = {
 };
 
 export type User = Database['public']['Tables']['users']['Row'] & {
+  email: string;
   xp: number;
   tierId: string;
   badges: string[];
@@ -215,4 +216,19 @@ export type UserProgress = {
   repetitions: number;
   streak_days: number;
   mastery_percent: number;
+};
+
+// Ecosystem Directory Types
+export type EntityType = 'Vendor' | 'Consultant' | 'Government' | 'Academia' | 'Non-Profit';
+
+export type EcosystemEntity = {
+    id: string;
+    name: string;
+    logoUrl: string;
+    type: EntityType;
+    tagline: string;
+    location: string;
+    domain: string;
+    isClaimed: boolean;
+    claimedByUserId?: string;
 };

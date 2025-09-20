@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { flashcardDecks, flashcards, vendors } from '../data/mockData';
-import { ChevronLeftIcon, ChevronRightIcon, ArrowUturnUpIcon, XIcon, PlayIcon, FireIcon, BookmarkSlashIcon, SpeakerWaveIcon, SpeakerXMarkIcon } from '../components/Icons';
+import { ChevronLeftIcon, ChevronRightIcon, ArrowUturnUpIcon, XIcon, PlayIcon, FireIcon, BookmarkSlashIcon, SpeakerWaveIcon, SpeakerXMarkIcon, SparklesIcon } from '../components/Icons';
 import type { Vendor, LexiconCategory } from '../types';
 import VideoPlayer from '../components/VideoPlayer';
 import { getCategoryLabel } from '../utils/categoryUtils';
+import AICoachModal from '../components/AICoachModal';
 
 const VideoModal: React.FC<{ isOpen: boolean; onClose: () => void; videoUrl: string; poster: string; title: string; }> = ({ isOpen, onClose, videoUrl, poster, title }) => {
     if (!isOpen) return null;
@@ -39,6 +40,7 @@ const FlashcardPlayer: React.FC = () => {
     const [isFlipped, setIsFlipped] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    const [isCoachOpen, setIsCoachOpen] = useState(false);
     const [activeVideoUrl, setActiveVideoUrl] = useState('');
     const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
@@ -266,6 +268,13 @@ const FlashcardPlayer: React.FC = () => {
                             <ArrowUturnUpIcon className="h-5 w-5" />
                             <span>Flip Card</span>
                         </button>
+                        <button 
+                            onClick={() => setIsCoachOpen(true)}
+                            className="flex items-center space-x-2 px-4 py-2 text-purple-300 font-semibold bg-purple-900/50 hover:bg-purple-900/80 rounded-lg transition"
+                        >
+                            <SparklesIcon className="h-5 w-5" />
+                            <span>AI Coach</span>
+                        </button>
                     </div>
                 </div>
 
@@ -299,6 +308,12 @@ const FlashcardPlayer: React.FC = () => {
                     title={`Micro-Lesson: ${currentCard.front.content}`}
                 />
             )}
+
+            <AICoachModal
+                isOpen={isCoachOpen}
+                onClose={() => setIsCoachOpen(false)}
+                card={currentCard}
+            />
         </div>
     );
 };

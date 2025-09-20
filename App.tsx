@@ -15,6 +15,9 @@ import type { Playlist } from './types';
 import AcademyHome from './pages/AcademyHome';
 import FlashcardPlayer from './pages/FlashcardPlayer';
 import EducationPathwayDetail from './pages/EducationPathwayDetail';
+import EcosystemDirectory from './pages/EcosystemDirectory';
+import EntityProfile from './pages/EntityProfile';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   const [watchHistory, setWatchHistory] = useState<string[]>(initialWatchHistory);
@@ -51,34 +54,38 @@ function App() {
   }, []);
 
   return (
-    <HashRouter>
-      <div className="bg-[#0F172A] min-h-screen font-sans text-slate-300">
-        <Header />
-        <main className="p-4 sm:p-6 lg:p-8">
-          <Routes>
-            <Route path="/" element={<LexiconHome />} />
-            <Route path="/term/:id" element={<TermDetail />} />
-            <Route path="/vendor/:vendorId" element={<VendorMicrosite />} />
-            <Route path="/droobi-tv" element={<DroobiTVHome watchHistoryIds={watchHistory} playlists={playlists} />} />
-            <Route path="/droobi-tv/sessions" element={<DroobiTVSessions />} />
-            <Route path="/manuals" element={<ManualsLibrary />} />
-            <Route path="/manual/:manualId" element={<ManualDetail />} />
-            <Route path="/academy" element={<AcademyHome />} />
-            <Route path="/academy/deck/:deckId" element={<FlashcardPlayer />} />
-            <Route path="/academy/pathway/:pathwayId" element={<EducationPathwayDetail />} />
-            <Route path="/video/:videoId" element={
-              <VideoDetail 
-                onWatch={handleAddToHistory}
-                playlists={playlists}
-                onToggleInPlaylist={handleToggleInPlaylist}
-                onCreatePlaylist={handleCreatePlaylist}
-              />} 
-            />
-            <Route path="/profile/:userId" element={<UserProfile />} />
-          </Routes>
-        </main>
-      </div>
-    </HashRouter>
+    <AuthProvider>
+      <HashRouter>
+        <div className="bg-[#0F172A] min-h-screen font-sans text-slate-300">
+          <Header />
+          <main className="p-4 sm:p-6 lg:p-8">
+            <Routes>
+              <Route path="/" element={<LexiconHome />} />
+              <Route path="/term/:id" element={<TermDetail />} />
+              <Route path="/vendor/:vendorId" element={<VendorMicrosite />} />
+              <Route path="/droobi-tv" element={<DroobiTVHome watchHistoryIds={watchHistory} playlists={playlists} />} />
+              <Route path="/droobi-tv/sessions" element={<DroobiTVSessions />} />
+              <Route path="/manuals" element={<ManualsLibrary />} />
+              <Route path="/manual/:manualId" element={<ManualDetail />} />
+              <Route path="/academy" element={<AcademyHome />} />
+              <Route path="/academy/deck/:deckId" element={<FlashcardPlayer />} />
+              <Route path="/academy/pathway/:pathwayId" element={<EducationPathwayDetail />} />
+              <Route path="/ecosystem" element={<EcosystemDirectory />} />
+              <Route path="/ecosystem/:entityId" element={<EntityProfile />} />
+              <Route path="/video/:videoId" element={
+                <VideoDetail 
+                  onWatch={handleAddToHistory}
+                  playlists={playlists}
+                  onToggleInPlaylist={handleToggleInPlaylist}
+                  onCreatePlaylist={handleCreatePlaylist}
+                />} 
+              />
+              <Route path="/profile/:userId" element={<UserProfile />} />
+            </Routes>
+          </main>
+        </div>
+      </HashRouter>
+    </AuthProvider>
   );
 }
 
