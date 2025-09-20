@@ -5,31 +5,41 @@ import type { DocumentationItem, PerformanceMetric } from '../types';
 import KeyContacts from '../components/KeyContacts';
 import VerifiedBadge from '../components/VerifiedBadge';
 import KpiCard from '../components/KpiCard';
-import {
-    ChevronLeftIcon,
-    VideoCameraIcon,
-    RssIcon,
-    PresentationChartBarIcon,
-    WifiIcon,
-    PlayIcon,
-    MailIcon,
-    PhoneIcon,
-    GlobeAltIcon,
-    StarIcon,
-    DocumentTextIcon,
-    CheckIcon,
-    ShareIcon,
-    EyeIcon,
-    LeafIcon,
-    LightningBoltIcon,
-    ClockIcon,
-    DocumentDownloadIcon,
-    MegaphoneIcon,
-    ArrowRightIcon,
-    ChartBarIcon,
-} from '../components/Icons';
+import * as Icons from '../components/Icons';
+
+// FIX: Centralized icon mapping to break circular dependencies and simplify component logic.
+const iconMap: { [key: string]: React.FC<{ className?: string }> } = {
+    ChevronLeftIcon: Icons.ChevronLeftIcon,
+    VideoCameraIcon: Icons.VideoCameraIcon,
+    RssIcon: Icons.RssIcon,
+    PresentationChartBarIcon: Icons.PresentationChartBarIcon,
+    WifiIcon: Icons.WifiIcon,
+    PlayIcon: Icons.PlayIcon,
+    MailIcon: Icons.MailIcon,
+    PhoneIcon: Icons.PhoneIcon,
+    GlobeAltIcon: Icons.GlobeAltIcon,
+    StarIcon: Icons.StarIcon,
+    DocumentTextIcon: Icons.DocumentTextIcon,
+    CheckIcon: Icons.CheckIcon,
+    ShareIcon: Icons.ShareIcon,
+    EyeIcon: Icons.EyeIcon,
+    LeafIcon: Icons.LeafIcon,
+    LightningBoltIcon: Icons.LightningBoltIcon,
+    ClockIcon: Icons.ClockIcon,
+    DocumentDownloadIcon: Icons.DocumentDownloadIcon,
+    MegaphoneIcon: Icons.MegaphoneIcon,
+    ArrowRightIcon: Icons.ArrowRightIcon,
+    ChartBarIcon: Icons.ChartBarIcon,
+    // Add any other icons used in mock data, e.g., for KPIs
+    BriefcaseIcon: Icons.BriefcaseIcon,
+    BeakerIcon: Icons.BeakerIcon,
+};
+
 
 const DocumentListItemIcon: React.FC<{ category: string; className?: string }> = ({ category, className }) => {
+    const LeafIcon = iconMap['LeafIcon'];
+    const LightningBoltIcon = iconMap['LightningBoltIcon'];
+    const DocumentTextIcon = iconMap['DocumentTextIcon'];
     switch (category) {
         case 'Stormwater Management':
             return <LeafIcon className={className} />;
@@ -43,6 +53,8 @@ const DocumentListItemIcon: React.FC<{ category: string; className?: string }> =
 };
 
 const DocumentListItem: React.FC<{ document: DocumentationItem }> = ({ document }) => {
+    const DocumentDownloadIcon = iconMap['DocumentDownloadIcon'];
+    const ClockIcon = iconMap['ClockIcon'];
     return (
         <a href={document.documentUrl} target="_blank" rel="noopener noreferrer" className="block bg-slate-800/50 rounded-2xl ring-1 ring-white/10 p-5 hover:bg-slate-800 hover:ring-blue-500 transition-all duration-300 group">
             <div className="flex justify-between items-start">
@@ -97,6 +109,11 @@ const PerformanceMetrics: React.FC<{ metrics: PerformanceMetric[] }> = ({ metric
 
 const FeaturedDocument: React.FC<{ document: DocumentationItem }> = ({ document }) => {
     const [isCopied, setIsCopied] = useState(false);
+    const DocumentTextIcon = iconMap['DocumentTextIcon'];
+    const CheckIcon = iconMap['CheckIcon'];
+    const DocumentDownloadIcon = iconMap['DocumentDownloadIcon'];
+    const ShareIcon = iconMap['ShareIcon'];
+    const EyeIcon = iconMap['EyeIcon'];
 
     const handleShare = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -151,6 +168,8 @@ const FeaturedDocument: React.FC<{ document: DocumentationItem }> = ({ document 
 };
 
 const HostSessionCTA: React.FC = () => {
+    const MegaphoneIcon = iconMap['MegaphoneIcon'];
+    const ArrowRightIcon = iconMap['ArrowRightIcon'];
   return (
     <section className="bg-gradient-to-br from-blue-900 via-slate-900 to-slate-900 rounded-2xl ring-2 ring-blue-500/50 p-6 text-center shadow-2xl shadow-blue-500/20">
       <div className="bg-blue-500/20 rounded-full h-16 w-16 flex items-center justify-center mx-auto mb-4 ring-4 ring-blue-500/30">
@@ -192,6 +211,19 @@ const VendorMicrosite: React.FC = () => {
 
     const liveWebinar = vendor.webinars.find(w => w.isLive);
     const pastWebinars = vendor.webinars.filter(w => !w.isLive);
+    const ChevronLeftIcon = iconMap['ChevronLeftIcon'];
+    const StarIcon = iconMap['StarIcon'];
+    const CheckIcon = iconMap['CheckIcon'];
+    const WifiIcon = iconMap['WifiIcon'];
+    const ChartBarIcon = iconMap['ChartBarIcon'];
+    const RssIcon = iconMap['RssIcon'];
+    const PresentationChartBarIcon = iconMap['PresentationChartBarIcon'];
+    const MailIcon = iconMap['MailIcon'];
+    const PhoneIcon = iconMap['PhoneIcon'];
+    const GlobeAltIcon = iconMap['GlobeAltIcon'];
+    const VideoCameraIcon = iconMap['VideoCameraIcon'];
+    const PlayIcon = iconMap['PlayIcon'];
+
 
     // Unclaimed Profile View
     if (!vendor.isClaimed) {
@@ -346,9 +378,10 @@ const VendorMicrosite: React.FC = () => {
                                 Measurable outcomes and financial returns for smart objectives.
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {vendor.kpis.map(kpi => (
-                                    <KpiCard key={kpi.id} kpi={kpi} />
-                                ))}
+                                {vendor.kpis.map(kpi => {
+                                    const IconComponent = iconMap[kpi.icon];
+                                    return IconComponent ? <KpiCard key={kpi.id} kpi={kpi} Icon={IconComponent} /> : null;
+                                })}
                             </div>
                         </section>
                     )}

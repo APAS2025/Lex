@@ -1,9 +1,9 @@
 import type { LexiconTerm, Vendor, DroobiVideo, User, Comment, Playlist, DocumentationItem, Session, OnDemandSession, Manual, Flashcard, FlashcardDeck, LearningPathway, OneWaterMinute } from '../types';
 // FIX: Import getCategoryLabel for use in flashcard deck generation.
 import { getCategoryLabel } from '../utils/categoryUtils';
-import { WaterDropIcon, LightningBoltIcon, ChartBarIcon, BeakerIcon, ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '../components/Icons';
 
-const sampleDocs: DocumentationItem[] = [
+// FIX: Added vendor_id to sample docs to ensure type safety.
+const sampleDocs: Omit<DocumentationItem, 'vendor_id'>[] = [
       { 
         id: 'd001', 
         title: 'AT-Filter-5000 Cut Sheet', 
@@ -44,9 +44,9 @@ export const vendors: Vendor[] = [
     isClaimed: true,
     isVerified: true,
     contacts: [
-      { id: 'c001', name: 'Dr. Eleanor Vance', title: 'Chief Technology Officer', email: 'e.vance@aquatech.com', avatarUrl: 'https://picsum.photos/seed/eleanor/100/100' },
-      { id: 'c002', name: 'Benjamin Carter', title: 'Head of Sales, North America', email: 'b.carter@aquatech.com', avatarUrl: 'https://picsum.photos/seed/benjamin/100/100' },
-      { id: 'c003', name: 'Olivia Chen', title: 'Municipal Solutions Lead', email: 'o.chen@aquatech.com', avatarUrl: 'https://picsum.photos/seed/olivia/100/100' },
+      { id: 'c001', name: 'Dr. Eleanor Vance', title: 'Chief Technology Officer', email: 'e.vance@aquatech.com', avatarUrl: 'https://picsum.photos/seed/eleanor/100/100', vendor_id: 'v001' },
+      { id: 'c002', name: 'Benjamin Carter', title: 'Head of Sales, North America', email: 'b.carter@aquatech.com', avatarUrl: 'https://picsum.photos/seed/benjamin/100/100', vendor_id: 'v001' },
+      { id: 'c003', name: 'Olivia Chen', title: 'Municipal Solutions Lead', email: 'o.chen@aquatech.com', avatarUrl: 'https://picsum.photos/seed/olivia/100/100', vendor_id: 'v001' },
     ],
     kpis: [
       {
@@ -55,7 +55,7 @@ export const vendors: Vendor[] = [
         measurableOutcome: 'Achieve a 15% reduction in real water losses across two district metered areas within 24 months.',
         financialReturn: '~$250,000 / year in recovered water and reduced pumping costs.',
         investment: '~$400,000 for sensor deployment and analytics platform subscription.',
-        icon: WaterDropIcon,
+        icon: 'WaterDropIcon',
       },
       {
         id: 'kpi002',
@@ -63,7 +63,7 @@ export const vendors: Vendor[] = [
         measurableOutcome: 'Increase mean time between failures (MTBF) for primary filtration units by 30% over 12 months.',
         financialReturn: '~$120,000 / year in reduced emergency maintenance and labor.',
         investment: '~$150,000 for predictive maintenance hardware and software upgrade.',
-        icon: ChartBarIcon,
+        icon: 'ChartBarIcon',
       }
     ],
     documentation: [
@@ -81,6 +81,7 @@ export const vendors: Vendor[] = [
         documentUrl: '#',
         complianceStatus: 'EPA Compliant',
         roi: 247,
+        vendor_id: 'v001',
         performanceMetrics: [
           { name: 'Flow Rate Efficiency', value: 85 },
           { name: 'Treatment Efficiency', value: 92 },
@@ -98,6 +99,7 @@ export const vendors: Vendor[] = [
         annualSavings: 150000,
         previewImageUrl: 'https://picsum.photos/seed/doc-pop-1/800/600',
         documentUrl: '#',
+        vendor_id: 'v001',
       },
       { 
         id: 'd003-popular', 
@@ -110,6 +112,7 @@ export const vendors: Vendor[] = [
         annualSavings: 320000,
         previewImageUrl: 'https://picsum.photos/seed/doc-pop-2/800/600',
         documentUrl: '#',
+        vendor_id: 'v001',
       },
       { 
         id: 'd004-popular', 
@@ -122,21 +125,22 @@ export const vendors: Vendor[] = [
         annualSavings: 280000,
         previewImageUrl: 'https://picsum.photos/seed/doc-pop-3/800/600',
         documentUrl: '#',
+        vendor_id: 'v001',
       },
     ],
     articles: [
-      { id: 'a001', title: 'The Future of Urban Water Filtration', description: 'Exploring next-gen technologies that are reshaping how cities manage their water resources.', imageUrl: 'https://picsum.photos/seed/article1/400/200', url: '#' },
-      { id: 'a002', title: 'Case Study: Reducing NRW by 30% in Lincoln', description: 'A deep dive into our successful partnership with the City of Lincoln to combat water loss.', imageUrl: 'https://picsum.photos/seed/article2/400/200', url: '#' },
-      { id: 'a003', title: 'The ROI of Proactive Water Management', description: 'A financial analysis of investing in smart water infrastructure.', imageUrl: 'https://picsum.photos/seed/article3/400/200', url: '#' },
+      { id: 'a001', title: 'The Future of Urban Water Filtration', description: 'Exploring next-gen technologies that are reshaping how cities manage their water resources.', imageUrl: 'https://picsum.photos/seed/article1/400/200', url: '#', vendor_id: 'v001' },
+      { id: 'a002', title: 'Case Study: Reducing NRW by 30% in Lincoln', description: 'A deep dive into our successful partnership with the City of Lincoln to combat water loss.', imageUrl: 'https://picsum.photos/seed/article2/400/200', url: '#', vendor_id: 'v001' },
+      { id: 'a003', title: 'The ROI of Proactive Water Management', description: 'A financial analysis of investing in smart water infrastructure.', imageUrl: 'https://picsum.photos/seed/article3/400/200', url: '#', vendor_id: 'v001' },
     ],
     videos: [
-      { id: 'vid001', title: 'AquaTech Solutions Company Overview', thumbnailUrl: 'https://picsum.photos/seed/video1/400/225', videoUrl: '#' },
-      { id: 'vid002', title: 'Installation of the AT-Filter-5000', thumbnailUrl: 'https://picsum.photos/seed/video2/400/225', videoUrl: '#' },
-      { id: 'vid003', title: 'Client Testimonial: City of Northgate', thumbnailUrl: 'https://picsum.photos/seed/video3/400/225', videoUrl: '#' },
+      { id: 'vid001', title: 'AquaTech Solutions Company Overview', thumbnailUrl: 'https://picsum.photos/seed/video1/400/225', videoUrl: '#', vendor_id: 'v001' },
+      { id: 'vid002', title: 'Installation of the AT-Filter-5000', thumbnailUrl: 'https://picsum.photos/seed/video2/400/225', videoUrl: '#', vendor_id: 'v001' },
+      { id: 'vid003', title: 'Client Testimonial: City of Northgate', thumbnailUrl: 'https://picsum.photos/seed/video3/400/225', videoUrl: '#', vendor_id: 'v001' },
     ],
     webinars: [
-      { id: 'web001', title: 'Live Now: AI in Water Management', description: 'Join our panel of experts as they discuss the transformative impact of artificial intelligence on water utility operations.', dateTime: '2024-07-20T14:00:00Z', url: '#', isLive: true },
-      { id: 'web002', title: 'Past: Regulatory Compliance in 2024', description: 'A review of the latest changes in water quality regulations and how to stay compliant.', dateTime: '2024-06-15T14:00:00Z', url: '#', isLive: false },
+      { id: 'web001', title: 'Live Now: AI in Water Management', description: 'Join our panel of experts as they discuss the transformative impact of artificial intelligence on water utility operations.', dateTime: '2024-07-20T14:00:00Z', url: '#', isLive: true, vendor_id: 'v001' },
+      { id: 'web002', title: 'Past: Regulatory Compliance in 2024', description: 'A review of the latest changes in water quality regulations and how to stay compliant.', dateTime: '2024-06-15T14:00:00Z', url: '#', isLive: false, vendor_id: 'v001' },
     ],
   },
   {
@@ -165,9 +169,9 @@ export const vendors: Vendor[] = [
     isClaimed: true,
     isVerified: true,
     contacts: [
-      { id: 'c004', name: 'Marcus Thorne', title: 'Director of R&D', email: 'm.thorne@purecycle.net', avatarUrl: 'https://picsum.photos/seed/marcus/100/100' },
-      { id: 'c005', name: 'Sophia Rodriguez', title: 'Lead Process Engineer', email: 's.rodriguez@purecycle.net', avatarUrl: 'https://picsum.photos/seed/sophia/100/100' },
-      { id: 'c006', name: 'David Lee', title: 'Client Relations Manager', email: 'd.lee@purecycle.net', avatarUrl: 'https://picsum.photos/seed/david/100/100' },
+      { id: 'c004', name: 'Marcus Thorne', title: 'Director of R&D', email: 'm.thorne@purecycle.net', avatarUrl: 'https://picsum.photos/seed/marcus/100/100', vendor_id: 'v003' },
+      { id: 'c005', name: 'Sophia Rodriguez', title: 'Lead Process Engineer', email: 's.rodriguez@purecycle.net', avatarUrl: 'https://picsum.photos/seed/sophia/100/100', vendor_id: 'v003' },
+      { id: 'c006', name: 'David Lee', title: 'Client Relations Manager', email: 'd.lee@purecycle.net', avatarUrl: 'https://picsum.photos/seed/david/100/100', vendor_id: 'v003' },
     ],
     kpis: [
        {
@@ -176,7 +180,7 @@ export const vendors: Vendor[] = [
         measurableOutcome: 'Boost anaerobic digester biogas yield by 25% within 18 months through process optimization.',
         financialReturn: '~$350,000 / year in energy savings and renewable energy credits.',
         investment: '~$550,000 for advanced process control (APC) system and digester upgrades.',
-        icon: LightningBoltIcon,
+        icon: 'LightningBoltIcon',
       },
       {
         id: 'kpi004',
@@ -184,22 +188,22 @@ export const vendors: Vendor[] = [
         measurableOutcome: 'Achieve a 40% reduction in final biosolids volume via advanced dewatering and thermal hydrolysis.',
         financialReturn: '~$180,000 / year in reduced hauling and landfill tipping fees.',
         investment: '~$900,000 for new dewatering equipment (phased over 3 years).',
-        icon: BeakerIcon,
+        icon: 'BeakerIcon',
       }
     ],
-    documentation: sampleDocs,
+    documentation: sampleDocs.map(d => ({ ...d, vendor_id: 'v003' })),
     articles: [
-      { id: 'a007', title: 'The Circular Economy in Wastewater', description: 'How resource recovery is changing the paradigm of wastewater treatment.', imageUrl: 'https://picsum.photos/seed/article7/400/200', url: '#' },
-      { id: 'a008', title: 'Nutrient Harvesting: A New Revenue Stream', description: 'Turning phosphorus and nitrogen from waste into valuable fertilizer products.', imageUrl: 'https://picsum.photos/seed/article8/400/200', url: '#' },
-      { id: 'a009', title: 'Decentralized Treatment: The Quiet Revolution', description: 'Why smaller, localized treatment facilities are the future for growing communities.', imageUrl: 'https://picsum.photos/seed/article9/400/200', url: '#' },
+      { id: 'a007', title: 'The Circular Economy in Wastewater', description: 'How resource recovery is changing the paradigm of wastewater treatment.', imageUrl: 'https://picsum.photos/seed/article7/400/200', url: '#', vendor_id: 'v003' },
+      { id: 'a008', title: 'Nutrient Harvesting: A New Revenue Stream', description: 'Turning phosphorus and nitrogen from waste into valuable fertilizer products.', imageUrl: 'https://picsum.photos/seed/article8/400/200', url: '#', vendor_id: 'v003' },
+      { id: 'a009', title: 'Decentralized Treatment: The Quiet Revolution', description: 'Why smaller, localized treatment facilities are the future for growing communities.', imageUrl: 'https://picsum.photos/seed/article9/400/200', url: '#', vendor_id: 'v003' },
     ],
     videos: [
-      { id: 'vid007', title: 'Tour of a PureCycle Facility', thumbnailUrl: 'https://picsum.photos/seed/video7/400/225', videoUrl: '#' },
-      { id: 'vid008', title: 'From Waste to Clean Water: MBR Explained', thumbnailUrl: 'https://picsum.photos/seed/video8/400/225', videoUrl: '#' },
-      { id: 'vid009', title: 'Resource Recovery in Action', thumbnailUrl: 'https://picsum.photos/seed/video9/400/225', videoUrl: '#' },
+      { id: 'vid007', title: 'Tour of a PureCycle Facility', thumbnailUrl: 'https://picsum.photos/seed/video7/400/225', videoUrl: '#', vendor_id: 'v003' },
+      { id: 'vid008', title: 'From Waste to Clean Water: MBR Explained', thumbnailUrl: 'https://picsum.photos/seed/video8/400/225', videoUrl: '#', vendor_id: 'v003' },
+      { id: 'vid009', 'title': 'Resource Recovery in Action', thumbnailUrl: 'https://picsum.photos/seed/video9/400/225', videoUrl: '#', vendor_id: 'v003' },
     ],
     webinars: [
-      { id: 'web005', title: 'Past: The Economics of Water Reuse', description: 'Analyzing the financial benefits and implementation strategies for water recycling programs.', dateTime: '2024-07-10T14:00:00Z', url: '#', isLive: false },
+      { id: 'web005', title: 'Past: The Economics of Water Reuse', description: 'Analyzing the financial benefits and implementation strategies for water recycling programs.', dateTime: '2024-07-10T14:00:00Z', url: '#', isLive: false, vendor_id: 'v003' },
     ],
   },
   {
@@ -228,21 +232,21 @@ export const vendors: Vendor[] = [
     isClaimed: true,
     isVerified: false,
     contacts: [
-      { id: 'c007', name: 'Isabelle Moreau', title: 'VP of Product (Digital Twin)', email: 'i.moreau@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/isabelle/100/100' },
-      { id: 'c008', name: 'Leo Gallagher', title: 'Senior Data Scientist', email: 'l.gallagher@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/leo/100/100' },
-      { id: 'c009', name: 'Jasmine Patel', title: 'Smart Utility Consultant', email: 'j.patel@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/jasmine/100/100' },
+      { id: 'c007', name: 'Isabelle Moreau', title: 'VP of Product (Digital Twin)', email: 'i.moreau@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/isabelle/100/100', vendor_id: 'v005' },
+      { id: 'c008', name: 'Leo Gallagher', title: 'Senior Data Scientist', email: 'l.gallagher@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/leo/100/100', vendor_id: 'v005' },
+      { id: 'c009', name: 'Jasmine Patel', title: 'Smart Utility Consultant', email: 'j.patel@datacurrent.ai', avatarUrl: 'https://picsum.photos/seed/jasmine/100/100', vendor_id: 'v005' },
     ],
-    documentation: sampleDocs,
+    documentation: sampleDocs.map(d => ({ ...d, vendor_id: 'v005' })),
     articles: [
-      { id: 'a012', title: 'The Rise of the Digital Twin in Water', description: 'How virtual models of physical systems are revolutionizing utility planning and operations.', imageUrl: 'https://picsum.photos/seed/article12/400/200', url: '#' },
-      { id: 'a013', title: 'AI-Powered Predictive Maintenance for Pumps', description: 'Case study on reducing downtime and operational costs through machine learning.', imageUrl: 'https://picsum.photos/seed/article13/400/200', url: '#' },
+      { id: 'a012', title: 'The Rise of the Digital Twin in Water', description: 'How virtual models of physical systems are revolutionizing utility planning and operations.', imageUrl: 'https://picsum.photos/seed/article12/400/200', url: '#', vendor_id: 'v005' },
+      { id: 'a013', title: 'AI-Powered Predictive Maintenance for Pumps', description: 'Case study on reducing downtime and operational costs through machine learning.', imageUrl: 'https://picsum.photos/seed/article13/400/200', url: '#', vendor_id: 'v005' },
     ],
     videos: [
-      { id: 'vid012', title: 'Dashboard Demo: Visualizing Your Network', thumbnailUrl: 'https://picsum.photos/seed/video12/400/225', videoUrl: '#' },
-      { id: 'vid013', title: 'What is SCADA?', thumbnailUrl: 'https://picsum.photos/seed/video13/400/225', videoUrl: '#' },
+      { id: 'vid012', title: 'Dashboard Demo: Visualizing Your Network', thumbnailUrl: 'https://picsum.photos/seed/video12/400/225', videoUrl: '#', vendor_id: 'v005' },
+      { id: 'vid013', title: 'What is SCADA?', thumbnailUrl: 'https://picsum.photos/seed/video13/400/225', videoUrl: '#', vendor_id: 'v005' },
     ],
     webinars: [
-      { id: 'web007', title: 'Past: Cybersecurity for Critical Infrastructure', description: 'Best practices for securing OT and IT systems in the water sector.', dateTime: '2024-07-12T14:00:00Z', url: '#', isLive: false },
+      { id: 'web007', title: 'Past: Cybersecurity for Critical Infrastructure', description: 'Best practices for securing OT and IT systems in the water sector.', dateTime: '2024-07-12T14:00:00Z', url: '#', isLive: false, vendor_id: 'v005' },
     ],
   }
 ];

@@ -1,31 +1,51 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getUserById, getTierById, getBadgeById } from '../utils/gamification';
+import { getTierById, getBadgeById } from '../utils/gamification';
 import { PROFESSIONAL_TIERS } from '../data/gamificationData';
 import type { User, ProfessionalTier, Badge } from '../types';
-import { initialTerms } from '../data/mockData';
-import { ChevronRightIcon, DocumentTextIcon, ChatBubbleLeftRightIcon, TrophyIcon } from '../components/Icons';
+import { initialTerms, users } from '../data/mockData';
+// FIX: Import all icons and create a map to resolve component from string.
+// This breaks the circular dependency between data files and component files.
+import * as Icons from '../components/Icons';
 
-// --- Sub-components defined within the same file for simplicity ---
+// FIX: User fetching logic moved here from utils to break a circular dependency.
+const getUserById = (userId: string): User | undefined => {
+    return users.find(u => u.id === userId);
+};
 
-const ProfileHeader: React.FC<{ user: User, tier?: ProfessionalTier }> = ({ user, tier }) => (
-    <div className="md:flex items-center space-x-0 md:space-x-8 text-center md:text-left">
-        <img 
-            src={user.avatarUrl} 
-            alt={user.name}
-            className="h-32 w-32 rounded-full ring-4 ring-slate-700/50 object-cover mx-auto md:mx-0"
-        />
-        <div className="mt-4 md:mt-0">
-            <h1 className="text-4xl font-extrabold text-slate-100">{user.name}</h1>
-            {tier && (
-                <div className="mt-2 flex items-center justify-center md:justify-start space-x-2 bg-blue-900/50 text-blue-300 ring-blue-500/30 text-lg font-bold px-4 py-2 rounded-full ring-1 ring-inset inline-flex">
-                    <tier.icon className="h-6 w-6" />
-                    <span>{tier.name}</span>
-                </div>
-            )}
+const iconMap: { [key: string]: React.FC<{ className?: string }> } = {
+    AcademicCapIcon: Icons.AcademicCapIcon,
+    StarIcon: Icons.StarIcon,
+    SparklesIcon: Icons.SparklesIcon,
+    ShieldCheckIcon: Icons.ShieldCheckIcon,
+    ChatBubbleLeftRightIcon: Icons.ChatBubbleLeftRightIcon,
+    DocumentTextIcon: Icons.DocumentTextIcon,
+    LightBulbIcon: Icons.LightBulbIcon,
+    TrophyIcon: Icons.TrophyIcon,
+    FireIcon: Icons.FireIcon,
+};
+
+const ProfileHeader: React.FC<{ user: User, tier?: ProfessionalTier }> = ({ user, tier }) => {
+    const IconComponent = tier ? iconMap[tier.icon] : null;
+    return (
+        <div className="md:flex items-center space-x-0 md:space-x-8 text-center md:text-left">
+            <img
+                src={user.avatarUrl}
+                alt={user.name}
+                className="h-32 w-32 rounded-full ring-4 ring-slate-700/50 object-cover mx-auto md:mx-0"
+            />
+            <div className="mt-4 md:mt-0">
+                <h1 className="text-4xl font-extrabold text-slate-100">{user.name}</h1>
+                {tier && IconComponent && (
+                    <div className="mt-2 flex items-center justify-center md:justify-start space-x-2 bg-blue-900/50 text-blue-300 ring-blue-500/30 text-lg font-bold px-4 py-2 rounded-full ring-1 ring-inset inline-flex">
+                        <IconComponent className="h-6 w-6" />
+                        <span>{tier.name}</span>
+                    </div>
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const XPProgressBar: React.FC<{ user: User, currentTier?: ProfessionalTier, nextTier?: ProfessionalTier }> = ({ user, currentTier, nextTier }) => {
     if (!currentTier) return null;
@@ -83,45 +103,54 @@ const StatsBlock: React.FC<{ user: User }> = ({ user }) => (
     </div>
 );
 
-const BadgeCard: React.FC<{ badge: Badge }> = ({ badge }) => (
-    <div className="group relative text-center flex flex-col items-center">
-        <div className="relative w-20 h-20 rounded-full flex items-center justify-center ring-2 ring-slate-700/50 group-hover:ring-yellow-400 transition-all duration-300 transform group-hover:scale-110 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 shadow-lg shadow-black/30">
-            {/* Shimmer effect */}
-            <div className="absolute inset-0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            
-            <badge.icon className="h-10 w-10 text-yellow-400 z-10" />
-        </div>
-        <p className="text-sm font-semibold mt-2 text-slate-300">{badge.name}</p>
-        
-        {/* Tooltip */}
-        <div className="absolute bottom-full mb-3 w-48 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 ring-1 ring-white/10">
-            <p className="font-bold mb-1">{badge.name}</p>
-            {badge.description}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-900"></div>
-        </div>
-    </div>
-);
+const BadgeCard: React.FC<{ badge: Badge }> = ({ badge }) => {
+    const IconComponent = iconMap[badge.icon];
+    if (!IconComponent) return null;
 
-const BadgeCase: React.FC<{ user: User }> = ({ user }) => (
-    <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10 p-6">
-        <h3 className="font-bold text-slate-100 text-lg mb-6">Badge Showcase</h3>
-        {user.badges.length > 0 ? (
-            <div className="grid grid-cols-4 gap-4">
-                {user.badges.map(badgeId => {
-                    const badge = getBadgeById(badgeId);
-                    return badge ? <BadgeCard key={badge.id} badge={badge} /> : null;
-                })}
+    return (
+        <div className="group relative text-center flex flex-col items-center">
+            <div className="relative w-20 h-20 rounded-full flex items-center justify-center ring-2 ring-slate-700/50 group-hover:ring-yellow-400 transition-all duration-300 transform group-hover:scale-110 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 shadow-lg shadow-black/30">
+                {/* Shimmer effect */}
+                <div className="absolute inset-0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
+                <IconComponent className="h-10 w-10 text-yellow-400 z-10" />
             </div>
-        ) : (
-            <div className="text-center text-slate-400 py-8">
-                <TrophyIcon className="h-12 w-12 mx-auto text-slate-600 mb-2"/>
-                <p>No badges earned yet. <br/> Start contributing to earn them!</p>
+            <p className="text-sm font-semibold mt-2 text-slate-300">{badge.name}</p>
+
+            {/* Tooltip */}
+            <div className="absolute bottom-full mb-3 w-48 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 ring-1 ring-white/10">
+                <p className="font-bold mb-1">{badge.name}</p>
+                {badge.description}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-slate-900"></div>
             </div>
-        )}
-    </div>
-);
+        </div>
+    );
+};
+
+const BadgeCase: React.FC<{ user: User }> = ({ user }) => {
+    const TrophyIcon = Icons['TrophyIcon'];
+    return (
+        <div className="bg-slate-800/50 rounded-xl ring-1 ring-white/10 p-6">
+            <h3 className="font-bold text-slate-100 text-lg mb-6">Badge Showcase</h3>
+            {user.badges.length > 0 ? (
+                <div className="grid grid-cols-4 gap-4">
+                    {user.badges.map(badgeId => {
+                        const badge = getBadgeById(badgeId);
+                        return badge ? <BadgeCard key={badge.id} badge={badge} /> : null;
+                    })}
+                </div>
+            ) : (
+                <div className="text-center text-slate-400 py-8">
+                    <TrophyIcon className="h-12 w-12 mx-auto text-slate-600 mb-2"/>
+                    <p>No badges earned yet. <br/> Start contributing to earn them!</p>
+                </div>
+            )}
+        </div>
+    );
+};
 
 const ActivityFeed: React.FC<{ user: User }> = ({ user }) => {
+    const ChatBubbleLeftRightIcon = Icons['ChatBubbleLeftRightIcon'];
     // For mock purposes, find all comments by this user
     const userComments = useMemo(() => {
         return initialTerms.flatMap(term => 

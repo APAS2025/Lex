@@ -1,17 +1,19 @@
 import React from 'react';
 import type { Kpi } from '../types';
-import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from './Icons';
+import * as Icons from './Icons';
 
 interface KpiCardProps {
   kpi: Kpi;
+  Icon: React.FC<{ className?: string }>;
 }
 
-const KpiCard: React.FC<KpiCardProps> = ({ kpi }) => {
+const KpiCard: React.FC<KpiCardProps> = ({ kpi, Icon }) => {
+  const { ArrowTrendingUpIcon, ArrowTrendingDownIcon } = Icons;
   return (
     <div className="bg-slate-800/50 rounded-2xl ring-1 ring-white/10 p-6 flex flex-col h-full shadow-lg hover:shadow-blue-500/10 hover:ring-blue-500/80 transition-all duration-300">
       <div className="flex items-start space-x-4">
         <div className="bg-slate-700/50 p-3 rounded-lg ring-1 ring-white/10">
-          <kpi.icon className="h-7 w-7 text-blue-400" />
+          <Icon className="h-7 w-7 text-blue-400" />
         </div>
         <div>
           <h4 className="font-extrabold text-slate-100 text-lg leading-tight">{kpi.objective}</h4>

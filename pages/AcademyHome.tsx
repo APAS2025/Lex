@@ -5,9 +5,24 @@ import type { FlashcardDeck, LearningPathway, LexiconCategory } from '../types';
 import DeckCard from '../components/DeckCard';
 import PathwayCard from '../components/PathwayCard';
 import GamificationDashboard from '../components/GamificationDashboard';
-// FIX: Import DocumentTextIcon to resolve usage error.
-import { BrainCircuitIcon, ChevronRightIcon, SparklesIcon, StarIcon, DocumentTextIcon } from '../components/Icons';
+import * as Icons from '../components/Icons';
 import { LEXICON_CATEGORY_DETAILS } from '../utils/categoryUtils';
+
+// FIX: Centralized icon mapping to break circular dependencies.
+const iconMap: { [key: string]: React.FC<{ className?: string }> } = {
+    BrainCircuitIcon: Icons.BrainCircuitIcon,
+    ChevronRightIcon: Icons.ChevronRightIcon,
+    SparklesIcon: Icons.SparklesIcon,
+    StarIcon: Icons.StarIcon,
+    DocumentTextIcon: Icons.DocumentTextIcon,
+    CodeIcon: Icons.CodeIcon,
+    BriefcaseIcon: Icons.BriefcaseIcon,
+    FireIcon: Icons.FireIcon,
+    ShieldCheckIcon: Icons.ShieldCheckIcon,
+    UsersIcon: Icons.UsersIcon,
+    ChartBarIcon: Icons.ChartBarIcon,
+    WrenchScrewdriverIcon: Icons.WrenchScrewdriverIcon,
+};
 
 const DeckCategoryRow: React.FC<{ title: string; decks: FlashcardDeck[]; icon?: React.ReactNode }> = ({ title, decks, icon }) => {
     if (decks.length === 0) return (
@@ -52,6 +67,8 @@ const PathwayCategoryRow: React.FC<{ title: string; pathways: LearningPathway[] 
 const OneWaterMinuteHero: React.FC = () => {
     const dailyCard = useMemo(() => flashcards.find(c => c.id === oneWaterMinute.card_id), []);
     const dailyDeck = useMemo(() => flashcardDecks.find(d => d.id === oneWaterMinute.rollup_deck_id), []);
+    const SparklesIcon = iconMap['SparklesIcon'];
+    const ChevronRightIcon = iconMap['ChevronRightIcon'];
 
     const sponsor = useMemo(() => {
         if (!dailyDeck?.sponsorship) return null;
@@ -112,6 +129,10 @@ const AcademyHome: React.FC = () => {
         [activeCategory]
     );
 
+    const BrainCircuitIcon = iconMap['BrainCircuitIcon'];
+    const StarIcon = iconMap['StarIcon'];
+    const DocumentTextIcon = iconMap['DocumentTextIcon'];
+
 
     return (
         <div className="container mx-auto">
@@ -139,6 +160,7 @@ const AcademyHome: React.FC = () => {
                 <div className="flex overflow-x-auto space-x-2 lg:space-x-3 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
                     {categoryOrder.map(catId => {
                         const details = LEXICON_CATEGORY_DETAILS[catId];
+                        const IconComponent = iconMap[details.icon];
                         const isActive = activeCategory === catId;
                         return (
                              <button
@@ -151,7 +173,7 @@ const AcademyHome: React.FC = () => {
                                 }`}
                                 aria-pressed={isActive}
                             >
-                                <details.icon className="h-5 w-5" />
+                                {IconComponent && <IconComponent className="h-5 w-5" />}
                                 <span>{details.label}</span>
                             </button>
                         )

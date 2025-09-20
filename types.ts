@@ -16,13 +16,15 @@ export type Video = Database['public']['Tables']['videos']['Row'];
 export type Webinar = Database['public']['Tables']['webinars']['Row'];
 export type ContactPerson = Database['public']['Tables']['contact_persons']['Row'];
 
+// FIX: Icon type changed to string to prevent circular dependencies.
+// The UI layer will map the string identifier to the actual icon component.
 export type Kpi = {
   id: string;
   objective: string;
   measurableOutcome: string;
   financialReturn: string;
   investment: string;
-  icon: React.FC<{className?: string}>;
+  icon: string;
 };
 
 export type Vendor = Database['public']['Tables']['vendors']['Row'] & {
@@ -39,18 +41,20 @@ export type ImpactMetric = Database['public']['Tables']['impact_metrics']['Row']
 export type ResilienceMapping = Database['public']['Json']['resilience_mapping'];
 
 // Gamification Types
+// FIX: Icon type changed to string to prevent circular dependencies.
 export type ProfessionalTier = {
   id: string;
   name: string;
   minXp: number;
-  icon: React.FC<{className?: string}>;
+  icon: string;
 };
 
+// FIX: Icon type changed to string to prevent circular dependencies.
 export type Badge = {
   id: string;
   name: string;
   description: string;
-  icon: React.FC<{className?: string}>;
+  icon: string;
 };
 
 export type GamificationStats = {
