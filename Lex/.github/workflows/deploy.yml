@@ -1,0 +1,50 @@
+name: Build & Deploy to Cloud Run (us-east4)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      PROJECT_NUMBER: ${{ secrets.GCP_PROJECT_NUMBER }}
+      REGION: us-east4
+      SERVICE: lex-web
+      REPO_PATH: us-east4-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/app-repo/${{ env.SERVICE }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Auth to Google Cloud via OIDC
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: gh-actions-deployer@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker to Artifact Registry
+        run: gcloud auth configure-docker us-east4-docker.pkg.dev --quiet
+
+      - name: Build image
+        run: docker build -t ${{ env.REPO_PATH }}:${{ github.sha }} .
+
+      - name: Push image
+        run: docker push ${{ env.REPO_PATH }}:${{ github.sha }}
+
+      - name: Deploy to Cloud Run (Virginia)
+        run: |
+          gcloud run deploy ${{ env.SERVICE }} \
+            --image=${{ env.REPO_PATH }}:${{ github.sha }} \
+            --region=${{ env.REGION }} \
+            --platform=managed \
+            --no-allow-unauthenticated
